@@ -235,6 +235,12 @@ function buildSidebar(activePage) {
 
   const navItems = [
     { page: 'dashboard',   icon: gridIcon(),       label: 'Dashboard',    roles: ['admin','manager','employee'] },
+    { section: 'People Suite', roles: ['admin','manager'] },
+    { page: 'hiring',      icon: briefcaseIcon(),  label: 'Hiring',       roles: ['admin','manager'] },
+    { page: 'onboarding',  icon: checkIcon(),      label: 'Onboarding',   roles: ['admin','manager'] },
+    { page: 'benefits',    icon: heartIcon(),      label: 'Benefits',     roles: ['admin'] },
+    { page: 'reports',     icon: chartIcon(),      label: 'Reports',      roles: ['admin','manager'] },
+    { section: 'Workforce', roles: ['admin','manager','employee'] },
     { page: 'leave',       icon: calendarIcon(),   label: 'Leave',        roles: ['admin','manager','employee'] },
     { page: 'payroll',     icon: walletIcon(),     label: 'Payroll',      roles: ['admin','manager','employee'] },
     { page: 'messages',    icon: chatIcon(),       label: 'Messages',     roles: ['admin','manager','employee'] },
@@ -316,4 +322,8 @@ const docIcon      = () => `<svg ${iconProps}><path d="M14 2H6a2 2 0 00-2 2v16a2
 const starIcon     = () => `<svg ${iconProps}><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`;
 const usersIcon    = () => `<svg ${iconProps}><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>`;
 const orgIcon      = () => `<svg ${iconProps}><rect x="8" y="2" width="8" height="6" rx="1"/><rect x="1" y="16" width="8" height="6" rx="1"/><rect x="15" y="16" width="8" height="6" rx="1"/><path d="M12 8v4M12 12H5v4M12 12h7v4"/></svg>`;
+const briefcaseIcon = () => `<svg ${iconProps}><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2M3 12h18"/></svg>`;
+const checkIcon    = () => `<svg ${iconProps}><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>`;
+const heartIcon    = () => `<svg ${iconProps}><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 000-7.78z"/></svg>`;
+const chartIcon    = () => `<svg ${iconProps}><path d="M3 3v18h18"/><rect x="7" y="12" width="3" height="5"/><rect x="12" y="8" width="3" height="9"/><rect x="17" y="5" width="3" height="12"/></svg>`;
 const logoutIcon   = () => `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>`;
