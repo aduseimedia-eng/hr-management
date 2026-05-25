@@ -286,23 +286,6 @@
       font-weight: 600;
     }
 
-    .attendance-clock-section {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      padding: 20px;
-      background: var(--bg-page);
-      border-radius: var(--radius-lg);
-      margin-bottom: 0;
-    }
-    .clock-display {
-      font-family: var(--font-display);
-      font-size: 2.4rem;
-      font-weight: 700;
-      letter-spacing: -.02em;
-      color: var(--navy-800);
-    }
-
     .announcement-item {
       padding: 14px 0;
       border-bottom: 1px solid var(--border);
@@ -370,7 +353,7 @@
     <div class="section-heading">
       <div>
         <h2>Workforce Overview</h2>
-        <p>Live operational signals across attendance, leave, payroll, and people movement.</p>
+        <p>Live operational signals across leave, payroll, performance, and people movement.</p>
       </div>
     </div>
 
@@ -382,7 +365,7 @@
       </div>
       <div class="stat-card">
         <div class="stat-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
-        <div><div class="stat-value skeleton" style="width:60px;height:36px"></div><div class="stat-label">Present Today</div></div>
+        <div><div class="stat-value skeleton" style="width:60px;height:36px"></div><div class="stat-label">Pending Leave</div></div>
       </div>
       <div class="stat-card">
         <div class="stat-icon amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div>
@@ -404,34 +387,12 @@
     <!-- Main dashboard grid -->
     <div class="dash-grid">
       <!-- Operations queue -->
-      <div class="card col-span-2" id="ops-card">
+      <div class="card col-span-3" id="ops-card">
         <div class="card-header">
           <h3>Operations Queue</h3>
           <a href="leave.html" class="btn btn-outline btn-sm" id="ops-link">Review work</a>
         </div>
         <div class="card-body" id="ops-overview">
-          <div class="loading-state"><div class="spinner"></div></div>
-        </div>
-      </div>
-
-      <!-- My attendance today -->
-      <div class="card">
-        <div class="card-header">
-          <h3>My Attendance</h3>
-          <a href="attendance.html" class="btn btn-outline btn-sm">View all</a>
-        </div>
-        <div class="card-body" id="my-attendance">
-          <div class="loading-state"><div class="spinner"></div></div>
-        </div>
-      </div>
-
-      <!-- Workforce health -->
-      <div class="card" id="health-card">
-        <div class="card-header">
-          <h3>Workforce Health</h3>
-          <a href="attendance.html" class="btn btn-outline btn-sm">Report</a>
-        </div>
-        <div class="card-body" id="workforce-health">
           <div class="loading-state"><div class="spinner"></div></div>
         </div>
       </div>
@@ -463,10 +424,6 @@
         <div class="card-header"><h3>Quick Actions</h3></div>
         <div class="card-body">
           <div class="quick-actions-grid">
-            <a href="attendance.html" class="quick-action">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-              Clock In/Out
-            </a>
             <a href="leave.html" class="quick-action">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
               Request Leave
@@ -632,24 +589,6 @@ function renderAnnouncements(list) {
   }
 }
 
-async function clockIn() {
-  try {
-    await api.post('/attendance/clock-in');
-    toast('Clocked in successfully!', 'success');
-    const att = await api.get('/attendance/today');
-    renderMyAttendance(att);
-  } catch(e) { toast(e.message, 'error'); }
-}
-
-async function clockOut() {
-  try {
-    await api.post('/attendance/clock-out');
-    toast('Clocked out. Have a great evening!', 'success');
-    const att = await api.get('/attendance/today');
-    renderMyAttendance(att);
-  } catch(e) { toast(e.message, 'error'); }
-}
-
 // Notifications panel
 document.getElementById('notif-btn').addEventListener('click', toggleNotifPanel);
 let notifPanelOpen = false;
@@ -761,7 +700,7 @@ function monthLabel(row) {
 
 function shortMoney(value) {
   const amount = Number(value || 0);
-  if (Math.abs(amount) >= 1000) return `GHS ${(amount / 1000).toFixed(1)}k`;
+  if (Math.abs(amount) >= 1000) return `GHS${(amount / 1000).toFixed(1)}k`;
   return `GHS ${Math.round(amount).toLocaleString('en-GB')}`;
 }
 
@@ -801,7 +740,7 @@ function setDashboardCopy() {
   const sections = document.querySelectorAll('.section-heading');
   if (user.role === 'employee') {
     sections[0]?.querySelector('h2') && (sections[0].querySelector('h2').textContent = 'My HR Snapshot');
-    sections[0]?.querySelector('p') && (sections[0].querySelector('p').textContent = 'Your attendance, leave, payroll, documents, and performance at a glance.');
+    sections[0]?.querySelector('p') && (sections[0].querySelector('p').textContent = 'Your leave, payroll, documents, and performance at a glance.');
     sections[1]?.querySelector('h2') && (sections[1].querySelector('h2').textContent = 'My Workday');
     sections[1]?.querySelector('p') && (sections[1].querySelector('p').textContent = 'The HR tasks and updates that need your attention today.');
     document.getElementById('ops-link').textContent = 'Request leave';
@@ -813,22 +752,19 @@ function setDashboardCopy() {
 async function loadDashboard() {
   try {
     setDashboardCopy();
-    const [todayAtt, myLeaves, myPayslips, myDocs, myReviews] = await Promise.all([
-      api.get('/attendance/today'),
+    const [myLeaves, myPayslips, myDocs, myReviews] = await Promise.all([
       api.get('/leave/mine'),
       api.get('/payroll/mine'),
       api.get('/documents/mine'),
       api.get('/performance/mine')
     ]);
 
-    renderMyAttendance(todayAtt);
     renderProfileSnapshot({ leaves: myLeaves, payslips: myPayslips, docs: myDocs, reviews: myReviews });
 
     if (user.role !== 'employee') {
-      const [stats, leaveQueue, attendanceSummary] = await Promise.all([
+      const [stats, leaveQueue] = await Promise.all([
         api.get('/employees/dashboard'),
-        api.get('/leave'),
-        api.get('/attendance/summary')
+        api.get('/leave')
       ]);
 
       let payrollRows = [];
@@ -838,18 +774,15 @@ async function loadDashboard() {
       }
 
       document.getElementById('stat-grid').style.display = '';
-      document.getElementById('health-card').style.display = '';
-      renderStats(stats);
-      renderOpsOverview({ stats, leaveQueue, attendanceSummary, payrollRows });
-      renderWorkforceHealth(attendanceSummary, stats);
+      renderStats(stats, leaveQueue);
+      renderOpsOverview({ stats, leaveQueue, payrollRows });
       renderBirthdays(stats.upcoming_birthdays);
       renderRecentHires(stats.recent_hires);
     } else {
-      document.getElementById('health-card').style.display = 'none';
       const recentCard = document.getElementById('recent-hires')?.closest('.card');
       if (recentCard) recentCard.style.display = 'none';
-      renderEmployeeStats({ todayAtt, leaves: myLeaves, payslips: myPayslips, docs: myDocs, reviews: myReviews });
-      renderEmployeeOps({ todayAtt, leaves: myLeaves, payslips: myPayslips, docs: myDocs, reviews: myReviews });
+      renderEmployeeStats({ leaves: myLeaves, payslips: myPayslips, docs: myDocs, reviews: myReviews });
+      renderEmployeeOps({ leaves: myLeaves, payslips: myPayslips, docs: myDocs, reviews: myReviews });
       renderBirthdays([]);
     }
 
@@ -861,24 +794,28 @@ async function loadDashboard() {
   }
 }
 
-function renderStats(s) {
+function renderStats(s, leaveQueue) {
   const total = Number(s.total_employees || 0);
-  const present = Number(s.present_today || 0);
   const leave = Number(s.on_leave_today || 0);
-  const attendanceRate = total ? Math.round((present / total) * 100) : 0;
+  const pendingLeave = countByStatus(leaveQueue, 'pending');
+  const birthdays = (s.upcoming_birthdays || []).length;
 
   document.getElementById('stat-grid').innerHTML = `
     <div class="stat-card">
       <div class="stat-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div>
       <div><div class="stat-value">${total}</div><div class="stat-label">Active Employees</div><div class="kpi-note">Across all departments</div></div>
     </div>
-    <div class="stat-card ${attendanceRate < 80 ? 'priority' : ''}">
+    <div class="stat-card ${pendingLeave ? 'priority' : ''}">
       <div class="stat-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
-      <div><div class="stat-value">${attendanceRate}%</div><div class="stat-label">Attendance Rate</div><div class="kpi-note">${present} present or late today</div></div>
+      <div><div class="stat-value">${pendingLeave}</div><div class="stat-label">Pending Leave</div><div class="kpi-note">Requests waiting for review</div></div>
     </div>
     <div class="stat-card">
       <div class="stat-icon amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div>
       <div><div class="stat-value">${leave}</div><div class="stat-label">On Leave Today</div><div class="kpi-note">Approved absence coverage</div></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/></svg></div>
+      <div><div class="stat-value">${birthdays}</div><div class="stat-label">People Moments</div><div class="kpi-note">Birthdays in the next 30 days</div></div>
     </div>
     <div class="stat-card">
       <div class="stat-icon violet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M16 13a1 1 0 100-2 1 1 0 000 2z" fill="currentColor"/></svg></div>
@@ -891,14 +828,9 @@ function renderEmployeeStats(data) {
   const pendingLeaves = countByStatus(data.leaves, 'pending');
   const latestPayslip = latestByDate(data.payslips, 'created_at');
   const latestReview = latestByDate(data.reviews, 'review_date');
-  const attendanceStatus = data.todayAtt?.clock_in ? titleCase(data.todayAtt.status || 'present') : 'Not clocked in';
 
   document.getElementById('stat-grid').style.display = '';
   document.getElementById('stat-grid').innerHTML = `
-    <div class="stat-card ${!data.todayAtt?.clock_in ? 'priority' : ''}">
-      <div class="stat-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
-      <div><div class="stat-value">${escapeHtml(attendanceStatus)}</div><div class="stat-label">Today</div><div class="kpi-note">${data.todayAtt?.clock_in ? `Clocked in at ${fmt.time(data.todayAtt.clock_in)}` : 'Attendance action needed'}</div></div>
-    </div>
     <div class="stat-card ${pendingLeaves ? 'priority' : ''}">
       <div class="stat-icon amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div>
       <div><div class="stat-value">${pendingLeaves}</div><div class="stat-label">Pending Leave</div><div class="kpi-note">${plural(data.leaves.length, 'request')} in your history</div></div>
@@ -911,18 +843,20 @@ function renderEmployeeStats(data) {
       <div class="stat-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
       <div><div class="stat-value">${latestReview ? `${latestReview.rating}/5` : 'Not rated'}</div><div class="stat-label">Performance</div><div class="kpi-note">${latestReview ? escapeHtml(latestReview.period || fmt.date(latestReview.review_date)) : 'No review on file'}</div></div>
     </div>
+    <div class="stat-card">
+      <div class="stat-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+      <div><div class="stat-value">${data.docs.length}</div><div class="stat-label">Documents</div><div class="kpi-note">Files stored in self-service</div></div>
+    </div>
   `;
 }
 
-function renderOpsOverview({ stats, leaveQueue, attendanceSummary, payrollRows }) {
+function renderOpsOverview({ stats, leaveQueue, payrollRows }) {
   const pendingLeave = countByStatus(leaveQueue, 'pending');
   const approvedUpcoming = (leaveQueue || []).filter((row) => row.status === 'approved' && row.start_date >= new Date().toISOString().slice(0, 10)).length;
-  const summary = attendanceSummary.summary || {};
-  const lateCount = Number(summary.late || 0);
-  const absentCount = Number(summary.absent || 0);
   const pendingPayroll = countByStatus(payrollRows, 'pending');
   const processedPayroll = countByStatus(payrollRows, 'processed') + countByStatus(payrollRows, 'paid');
-  const topLate = (attendanceSummary.late_arrivals || []).slice(0, 2).map((row) => row.employee_name).filter(Boolean).join(', ');
+  const birthdays = (stats.upcoming_birthdays || []).length;
+  const recentHires = (stats.recent_hires || []).length;
   const priorityRows = [
     {
       dot: pendingLeave ? 'warn' : 'good',
@@ -931,16 +865,16 @@ function renderOpsOverview({ stats, leaveQueue, attendanceSummary, payrollRows }
       meta: 'Leave'
     },
     {
-      dot: absentCount ? 'danger' : lateCount ? 'warn' : 'good',
-      title: absentCount ? `${plural(absentCount, 'employee')} absent today` : `${plural(lateCount, 'late arrival')} today`,
-      copy: topLate ? `Late arrivals: ${escapeHtml(topLate)}.` : 'No late-arrival exceptions need manager attention.',
-      meta: 'Attendance'
-    },
-    {
       dot: pendingPayroll ? 'warn' : 'good',
       title: user.role === 'admin' ? `${plural(pendingPayroll, 'payroll item')} pending` : 'Payroll summary available',
       copy: user.role === 'admin' ? `${processedPayroll} current-month records are processed or paid.` : `${fmt.currency(stats.payroll_this_month)} processed for the month.`,
       meta: 'Payroll'
+    },
+    {
+      dot: birthdays ? 'good' : '',
+      title: birthdays ? `${plural(birthdays, 'people moment')} coming up` : 'No people moments this month',
+      copy: recentHires ? `${recentHires} recent hires are visible for onboarding follow-up.` : 'No new hire movement needs action.',
+      meta: 'People'
     }
   ];
 
@@ -952,9 +886,9 @@ function renderOpsOverview({ stats, leaveQueue, attendanceSummary, payrollRows }
         <div class="detail">${approvedUpcoming} upcoming approved</div>
       </div>
       <div class="ops-tile">
-        <div class="label">Attendance exceptions</div>
-        <div class="value">${lateCount + absentCount}</div>
-        <div class="detail">${lateCount} late, ${absentCount} absent</div>
+        <div class="label">People moments</div>
+        <div class="value">${birthdays}</div>
+        <div class="detail">${recentHires} recent hires</div>
       </div>
       <div class="ops-tile">
         <div class="label">Payroll readiness</div>
@@ -982,17 +916,9 @@ function renderEmployeeOps(data) {
   const approvedLeave = nextApprovedLeave(data.leaves);
   const latestPayslip = latestByDate(data.payslips, 'created_at');
   const latestReview = latestByDate(data.reviews, 'review_date');
-  const attendanceCopy = data.todayAtt?.clock_in
-    ? `Clocked in at ${fmt.time(data.todayAtt.clock_in)}`
-    : 'Clock in to start your attendance record.';
 
   document.getElementById('ops-overview').innerHTML = `
     <div class="ops-grid">
-      <div class="ops-tile">
-        <div class="label">Attendance</div>
-        <div class="value">${data.todayAtt?.clock_in ? 'Active' : 'Open'}</div>
-        <div class="detail">${attendanceCopy}</div>
-      </div>
       <div class="ops-tile">
         <div class="label">Leave</div>
         <div class="value">${pendingLeave}</div>
@@ -1002,6 +928,11 @@ function renderEmployeeOps(data) {
         <div class="label">Payroll</div>
         <div class="value">${latestPayslip ? titleCase(latestPayslip.status) : 'New'}</div>
         <div class="detail">${escapeHtml(monthLabel(latestPayslip))}</div>
+      </div>
+      <div class="ops-tile">
+        <div class="label">Documents</div>
+        <div class="value">${data.docs.length}</div>
+        <div class="detail">${data.docs.length ? 'stored in self-service' : 'upload files when ready'}</div>
       </div>
     </div>
     <div class="priority-list" style="margin-top:14px">
@@ -1029,58 +960,6 @@ function renderEmployeeOps(data) {
         </div>
         <div class="priority-meta">Files</div>
       </div>
-    </div>
-  `;
-}
-
-function renderWorkforceHealth(attendanceSummary, stats) {
-  const summary = attendanceSummary.summary || {};
-  const total = Math.max(Number(stats.total_employees || 0), 1);
-  const present = Number(summary.present || 0);
-  const late = Number(summary.late || 0);
-  const absent = Number(summary.absent || 0);
-  const leave = Number(stats.on_leave_today || 0);
-  const unrecorded = Math.max(total - present - late - absent - leave, 0);
-  const pct = (value) => Math.max(0, Math.min(100, (value / total) * 100));
-  const coverage = Math.round(((present + late + leave) / total) * 100);
-
-  document.getElementById('workforce-health').innerHTML = `
-    <div>
-      <div style="display:flex;justify-content:space-between;align-items:end;gap:12px">
-        <div>
-          <div class="stat-value">${coverage}%</div>
-          <div class="stat-label">Coverage Today</div>
-        </div>
-        <div class="kpi-note">${total} active employees</div>
-      </div>
-      <div class="health-bar" aria-label="Attendance status distribution">
-        <div class="health-segment present" style="width:${pct(present)}%"></div>
-        <div class="health-segment late" style="width:${pct(late)}%"></div>
-        <div class="health-segment leave" style="width:${pct(leave)}%"></div>
-        <div class="health-segment absent" style="width:${pct(absent)}%"></div>
-        <div class="health-segment unrecorded" style="width:${pct(unrecorded)}%"></div>
-      </div>
-      <div class="health-legend">
-        <span><i class="legend-dot" style="background:var(--emerald-600)"></i>${present} Present</span>
-        <span><i class="legend-dot" style="background:var(--amber-500)"></i>${late} Late</span>
-        <span><i class="legend-dot" style="background:var(--navy-400)"></i>${leave} On leave</span>
-        <span><i class="legend-dot" style="background:var(--rose-600)"></i>${absent} Absent</span>
-      </div>
-      ${(attendanceSummary.late_arrivals || []).length ? `
-        <div class="priority-list" style="margin-top:14px">
-          ${(attendanceSummary.late_arrivals || []).slice(0, 3).map((row) => `
-            <div class="people-row">
-              <div class="people-main">
-                <div>
-                  <div class="people-name">${escapeHtml(row.employee_name)}</div>
-                  <div class="people-sub">${escapeHtml(row.department_name || row.job_title || 'Team member')}</div>
-                </div>
-              </div>
-              <span class="badge badge-warning">${fmt.time(row.clock_in)}</span>
-            </div>
-          `).join('')}
-        </div>
-      ` : `<div class="empty-state" style="padding:18px 0 0"><p>No late arrivals recorded today.</p></div>`}
     </div>
   `;
 }
@@ -1130,40 +1009,6 @@ function renderProfileSnapshot({ leaves, payslips, docs, reviews }) {
       </div>
     </div>
   `;
-}
-
-function renderMyAttendance(att) {
-  const el = document.getElementById('my-attendance');
-  if (!att || !att.clock_in) {
-    el.innerHTML = `
-      <div style="text-align:center;padding:16px 0">
-        <p style="color:var(--text-muted);margin-bottom:16px">You have not clocked in today.</p>
-        <button class="btn btn-primary w-full" style="justify-content:center" onclick="clockIn()">Clock In Now</button>
-      </div>`;
-    return;
-  }
-
-  const hasOut = !!att.clock_out;
-  el.innerHTML = `
-    <div style="display:flex;flex-direction:column;gap:12px">
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <span class="text-sm text-muted">Status</span>
-        ${fmt.statusBadge(att.status)}
-      </div>
-      <div style="display:flex;justify-content:space-between">
-        <span class="text-sm text-muted">Clock In</span>
-        <span class="text-sm font-medium">${fmt.time(att.clock_in)}</span>
-      </div>
-      <div style="display:flex;justify-content:space-between">
-        <span class="text-sm text-muted">Clock Out</span>
-        <span class="text-sm font-medium">${att.clock_out ? fmt.time(att.clock_out) : 'Pending'}</span>
-      </div>
-      ${hasOut ? `<div style="display:flex;justify-content:space-between">
-        <span class="text-sm text-muted">Hours</span>
-        <span class="text-sm font-medium">${fmt.duration(att.clock_in, att.clock_out)}</span>
-      </div>` : ''}
-      ${!hasOut ? `<button class="btn btn-outline w-full" style="justify-content:center;margin-top:4px" onclick="clockOut()">Clock Out</button>` : ''}
-    </div>`;
 }
 
 function renderBirthdays(list) {
