@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — HRConnect</title>
+  <link rel="stylesheet" href="../css/main.css">
+  <style>
+    .welcome-banner {
+      background: linear-gradient(135deg, var(--navy-800) 0%, var(--navy-950) 100%);
+      border-radius: var(--radius-xl);
+      padding: 28px 32px;
+      color: #fff;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    .welcome-banner::before {
+      content: '';
+      position: absolute;
+      right: -40px; top: -60px;
+      width: 220px; height: 220px;
+      border-radius: 50%;
+      background: rgba(245,158,11,.08);
+    }
+    .welcome-banner h2 { font-size: 1.5rem; color: #fff; margin-bottom: 4px; }
+    .welcome-banner p  { color: rgba(255,255,255,.55); font-size: .9rem; }
+    .clock-widget-mini {
+      text-align: right;
+    }
+    .clock-big {
+      font-family: var(--font-display);
+      font-size: 2.2rem;
+      font-weight: 700;
+      letter-spacing: -.02em;
+      line-height: 1;
+    }
+    .clock-day { color: rgba(255,255,255,.5); font-size: .85rem; margin-top: 3px; }
+
+    .dash-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-rows: auto;
+      gap: 20px;
+    }
+    .col-span-2 { grid-column: span 2; }
+
+    .quick-actions-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+    .quick-action {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 13px 14px;
+      border-radius: var(--radius-md);
+      border: 1.5px solid var(--border);
+      font-size: .85rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      background: var(--bg-surface);
+      transition: all var(--duration);
+      text-decoration: none;
+    }
+    .quick-action:hover { border-color: var(--navy-400); color: var(--navy-700); background: var(--navy-50); transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+    .quick-action svg { width: 18px; height: 18px; color: var(--navy-600); flex-shrink: 0; }
+
+    .birthday-list { display: flex; flex-direction: column; gap: 12px; }
+    .birthday-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .birthday-item .bday-info { flex: 1; }
+    .birthday-item .bday-name { font-weight: 500; font-size: .9rem; }
+    .birthday-item .bday-date { font-size: .78rem; color: var(--text-muted); }
+    .birthday-item .bday-tag {
+      font-size: .72rem;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: var(--amber-100);
+      color: var(--amber-600);
+      font-weight: 600;
+    }
+
+    .attendance-clock-section {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 20px;
+      background: var(--bg-page);
+      border-radius: var(--radius-lg);
+      margin-bottom: 0;
+    }
+    .clock-display {
+      font-family: var(--font-display);
+      font-size: 2.4rem;
+      font-weight: 700;
+      letter-spacing: -.02em;
+      color: var(--navy-800);
+    }
+
+    .announcement-item {
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .announcement-item:last-child { border-bottom: none; }
+    .announcement-title { font-weight: 600; font-size: .9rem; margin-bottom: 4px; }
+    .announcement-body  { font-size: .84rem; color: var(--text-secondary); line-height: 1.5; }
+    .announcement-meta  { font-size: .75rem; color: var(--text-muted); margin-top: 6px; }
+    .pinned-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: .7rem; padding: 2px 8px; border-radius: 999px;
+      background: var(--amber-100); color: var(--amber-600); font-weight: 600;
+      margin-right: 8px;
+    }
+
+    @media (max-width: 1024px) {
+      .dash-grid { grid-template-columns: 1fr 1fr; }
+      .col-span-2 { grid-column: span 2; }
+    }
+    @media (max-width: 640px) {
+      .dash-grid { grid-template-columns: 1fr; }
+      .col-span-2 { grid-column: span 1; }
+    }
+  </style>
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar" id="sidebar"></aside>
+
+  <header class="topbar">
+    <div class="topbar-title" id="page-title">Dashboard</div>
+    <div class="topbar-actions">
+      <button class="icon-btn" id="notif-btn" title="Notifications">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>
+        <span class="dot hidden" id="notif-badge"></span>
+      </button>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <!-- Welcome banner -->
+    <div class="welcome-banner">
+      <div>
+        <h2 id="welcome-msg">Good morning 👋</h2>
+        <p id="welcome-sub">Here's what's happening at your company today.</p>
+      </div>
+      <div class="clock-widget-mini">
+        <div class="clock-big" id="live-clock">--:--</div>
+        <div class="clock-day" id="live-day"></div>
+      </div>
+    </div>
+
+    <!-- Stat cards -->
+    <div class="stat-grid" id="stat-grid">
+      <div class="stat-card">
+        <div class="stat-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div>
+        <div><div class="stat-value skeleton" style="width:60px;height:36px"></div><div class="stat-label">Total Employees</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+        <div><div class="stat-value skeleton" style="width:60px;height:36px"></div><div class="stat-label">Present Today</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div>
+        <div><div class="stat-value skeleton" style="width:60px;height:36px"></div><div class="stat-label">On Leave Today</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon violet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M16 13a1 1 0 100-2 1 1 0 000 2z" fill="currentColor"/></svg></div>
+        <div><div class="stat-value skeleton" style="width:60px;height:36px"></div><div class="stat-label">Monthly Payroll</div></div>
+      </div>
+    </div>
+
+    <!-- Main dashboard grid -->
+    <div class="dash-grid">
+      <!-- My attendance today -->
+      <div class="card">
+        <div class="card-header">
+          <h3>My Attendance</h3>
+          <a href="/pages/attendance.html" class="btn btn-outline btn-sm">View all</a>
+        </div>
+        <div class="card-body" id="my-attendance">
+          <div class="loading-state"><div class="spinner"></div></div>
+        </div>
+      </div>
+
+      <!-- Announcements -->
+      <div class="card col-span-2">
+        <div class="card-header">
+          <h3>Announcements</h3>
+          <div id="announce-admin-btn"></div>
+        </div>
+        <div class="card-body" id="announcements-list">
+          <div class="loading-state"><div class="spinner"></div></div>
+        </div>
+      </div>
+
+      <!-- Quick actions -->
+      <div class="card">
+        <div class="card-header"><h3>Quick Actions</h3></div>
+        <div class="card-body">
+          <div class="quick-actions-grid">
+            <a href="/pages/attendance.html" class="quick-action">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+              Clock In/Out
+            </a>
+            <a href="/pages/leave.html" class="quick-action">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+              Request Leave
+            </a>
+            <a href="/pages/payroll.html" class="quick-action">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M16 13a1 1 0 100-2 1 1 0 000 2z" fill="currentColor"/></svg>
+              View Payslips
+            </a>
+            <a href="/pages/messages.html" class="quick-action">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+              Messages
+            </a>
+            <a href="/pages/documents.html" class="quick-action">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              Documents
+            </a>
+            <a href="/pages/performance.html" class="quick-action">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              Performance
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Upcoming birthdays -->
+      <div class="card">
+        <div class="card-header"><h3>🎂 Upcoming Birthdays</h3></div>
+        <div class="card-body" id="birthdays-list">
+          <div class="loading-state"><div class="spinner"></div></div>
+        </div>
+      </div>
+
+      <!-- Recent hires -->
+      <div class="card">
+        <div class="card-header">
+          <h3>Recent Hires</h3>
+          <a href="/pages/employees.html" class="btn btn-outline btn-sm" id="recent-hires-link">View all</a>
+        </div>
+        <div class="card-body" id="recent-hires">
+          <div class="loading-state"><div class="spinner"></div></div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Notification panel -->
+<div id="notif-panel" class="notif-panel" style="display:none">
+  <div class="notif-panel-header">
+    <strong>Notifications</strong>
+    <button onclick="markAllRead()" class="btn btn-outline btn-sm">Mark all read</button>
+  </div>
+  <div class="notif-list" id="notif-list"></div>
+</div>
+
+<script src="../js/api.js"></script>
+<script>
+const user = requireAuth();
+if (!user) throw new Error('redirect');
+
+buildSidebar('dashboard');
+
+// Live clock
+function updateClock() {
+  const now = new Date();
+  document.getElementById('live-clock').textContent =
+    now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  document.getElementById('live-day').textContent =
+    now.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  const h = now.getHours();
+  const greet = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
+  document.getElementById('welcome-msg').textContent = `${greet}, ${user.first_name} 👋`;
+}
+updateClock();
+setInterval(updateClock, 1000);
+
+// Load dashboard
+async function loadDashboard() {
+  try {
+    // My attendance
+    const todayAtt = await api.get('/attendance/today');
+    renderMyAttendance(todayAtt);
+
+    // Dashboard stats (admin/manager only)
+    if (user.role !== 'employee') {
+      const stats = await api.get('/employees/dashboard');
+      renderStats(stats);
+      renderBirthdays(stats.upcoming_birthdays);
+      renderRecentHires(stats.recent_hires);
+    } else {
+      document.getElementById('stat-grid').style.display = 'none';
+      document.getElementById('recent-hires-link') && (document.getElementById('recent-hires').closest('.card').style.display='none');
+      renderBirthdays([]);
+    }
+
+    // Announcements (all roles)
+    const announcements = await api.get('/notifications/announcements');
+    renderAnnouncements(announcements);
+
+    loadNotifCount();
+  } catch (err) {
+    toast(err.message, 'error');
+  }
+}
+
+function renderStats(s) {
+  document.getElementById('stat-grid').innerHTML = `
+    <div class="stat-card">
+      <div class="stat-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div>
+      <div><div class="stat-value">${s.total_employees}</div><div class="stat-label">Total Employees</div></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+      <div><div class="stat-value">${s.present_today}</div><div class="stat-label">Present Today</div></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div>
+      <div><div class="stat-value">${s.on_leave_today}</div><div class="stat-label">On Leave Today</div></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon violet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M16 13a1 1 0 100-2 1 1 0 000 2z" fill="currentColor"/></svg></div>
+      <div><div class="stat-value">${fmt.currency(s.payroll_this_month)}</div><div class="stat-label">Monthly Payroll</div></div>
+    </div>
+  `;
+}
+
+function renderMyAttendance(att) {
+  const el = document.getElementById('my-attendance');
+  if (!att || !att.clock_in) {
+    el.innerHTML = `
+      <div style="text-align:center;padding:16px 0">
+        <div style="font-size:2.5rem;margin-bottom:12px">⏰</div>
+        <p style="color:var(--text-muted);margin-bottom:16px">You haven't clocked in today</p>
+        <button class="btn btn-primary w-full" style="justify-content:center" onclick="clockIn()">Clock In Now</button>
+      </div>`;
+    return;
+  }
+  const hasOut = !!att.clock_out;
+  el.innerHTML = `
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span class="text-sm text-muted">Status</span>
+        ${fmt.statusBadge(att.status)}
+      </div>
+      <div style="display:flex;justify-content:space-between">
+        <span class="text-sm text-muted">Clock In</span>
+        <span class="text-sm font-medium">${fmt.time(att.clock_in)}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between">
+        <span class="text-sm text-muted">Clock Out</span>
+        <span class="text-sm font-medium">${att.clock_out ? fmt.time(att.clock_out) : '—'}</span>
+      </div>
+      ${hasOut ? `<div style="display:flex;justify-content:space-between">
+        <span class="text-sm text-muted">Hours</span>
+        <span class="text-sm font-medium">${fmt.duration(att.clock_in, att.clock_out)}</span>
+      </div>` : ''}
+      ${!hasOut ? `<button class="btn btn-outline w-full" style="justify-content:center;margin-top:4px" onclick="clockOut()">Clock Out</button>` : ''}
+    </div>`;
+}
+
+function renderBirthdays(list) {
+  const el = document.getElementById('birthdays-list');
+  if (!list || !list.length) {
+    el.innerHTML = `<div class="empty-state"><p>No upcoming birthdays in the next 30 days.</p></div>`;
+    return;
+  }
+  el.innerHTML = `<div class="birthday-list">${list.map(e => {
+    const bday = new Date(e.date_of_birth);
+    const today = new Date();
+    const nextBday = new Date(today.getFullYear(), bday.getMonth(), bday.getDate());
+    if (nextBday < today) nextBday.setFullYear(today.getFullYear() + 1);
+    const daysLeft = Math.ceil((nextBday - today) / 86400000);
+    return `<div class="birthday-item">
+      ${avatarEl(e, 'sm')}
+      <div class="bday-info">
+        <div class="bday-name">${e.first_name} ${e.last_name}</div>
+        <div class="bday-date">${bday.toLocaleDateString('en-GB',{month:'long',day:'numeric'})}</div>
+      </div>
+      <span class="bday-tag">${daysLeft === 0 ? '🎉 Today!' : `In ${daysLeft}d`}</span>
+    </div>`;
+  }).join('')}</div>`;
+}
+
+function renderRecentHires(list) {
+  const el = document.getElementById('recent-hires');
+  if (!list || !list.length) { el.innerHTML = `<div class="empty-state"><p>No recent hires.</p></div>`; return; }
+  el.innerHTML = list.map(e => `
+    <div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--border)">
+      ${avatarEl(e, 'sm')}
+      <div style="flex:1">
+        <div style="font-size:.875rem;font-weight:500">${e.first_name} ${e.last_name}</div>
+        <div style="font-size:.78rem;color:var(--text-muted)">${e.job_title || '—'}</div>
+      </div>
+      <div style="font-size:.76rem;color:var(--text-muted)">${fmt.date(e.hire_date)}</div>
+    </div>`).join('');
+}
+
+function renderAnnouncements(list) {
+  const el = document.getElementById('announcements-list');
+  if (!list.length) { el.innerHTML = `<div class="empty-state"><p>No announcements yet.</p></div>`; return; }
+  el.innerHTML = list.map(a => `
+    <div class="announcement-item">
+      ${a.is_pinned ? `<span class="pinned-badge">📌 Pinned</span>` : ''}
+      <div class="announcement-title">${a.title}</div>
+      <div class="announcement-body">${a.body}</div>
+      <div class="announcement-meta">By ${a.author_name} · ${fmt.relativeTime(a.created_at)}</div>
+    </div>`).join('');
+
+  // Admin: show post announcement button
+  if (user.role === 'admin') {
+    document.getElementById('announce-admin-btn').innerHTML =
+      `<button class="btn btn-accent btn-sm" onclick="showAnnounceModal()">+ Post Announcement</button>`;
+  }
+}
+
+async function clockIn() {
+  try {
+    await api.post('/attendance/clock-in');
+    toast('Clocked in successfully!', 'success');
+    const att = await api.get('/attendance/today');
+    renderMyAttendance(att);
+  } catch(e) { toast(e.message, 'error'); }
+}
+
+async function clockOut() {
+  try {
+    await api.post('/attendance/clock-out');
+    toast('Clocked out. Have a great evening!', 'success');
+    const att = await api.get('/attendance/today');
+    renderMyAttendance(att);
+  } catch(e) { toast(e.message, 'error'); }
+}
+
+// Notifications panel
+document.getElementById('notif-btn').addEventListener('click', toggleNotifPanel);
+let notifPanelOpen = false;
+async function toggleNotifPanel() {
+  const panel = document.getElementById('notif-panel');
+  notifPanelOpen = !notifPanelOpen;
+  panel.style.display = notifPanelOpen ? 'flex' : 'none';
+  if (notifPanelOpen) await loadNotifications();
+}
+async function loadNotifications() {
+  const list = document.getElementById('notif-list');
+  const notifs = await api.get('/notifications/mine');
+  list.innerHTML = notifs.length
+    ? notifs.map(n => `
+        <div class="notif-item ${n.is_read ? '' : 'unread'}" onclick="readNotif(${n.id}, this)">
+          <div class="notif-dot" style="${n.is_read?'opacity:0':''}"></div>
+          <div>
+            <div class="notif-text">${n.message}</div>
+            <div class="notif-time">${fmt.relativeTime(n.created_at)}</div>
+          </div>
+        </div>`).join('')
+    : `<div style="padding:32px;text-align:center;color:var(--text-muted);font-size:.875rem">No notifications</div>`;
+  document.getElementById('notif-badge').classList.add('hidden');
+}
+async function readNotif(id, el) {
+  await api.patch(`/notifications/${id}/read`);
+  el.classList.remove('unread');
+  el.querySelector('.notif-dot').style.opacity = '0';
+}
+async function markAllRead() {
+  await api.patch('/notifications/read-all');
+  await loadNotifications();
+}
+
+function showAnnounceModal() {
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.innerHTML = `
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Post Announcement</h3>
+        <button class="modal-close" onclick="this.closest('.modal-overlay').remove()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label required">Title</label>
+          <input type="text" id="ann-title" class="form-control" placeholder="Announcement title">
+        </div>
+        <div class="form-group">
+          <label class="form-label required">Body</label>
+          <textarea id="ann-body" class="form-control" rows="4" placeholder="Write your announcement…"></textarea>
+        </div>
+        <label style="display:flex;align-items:center;gap:8px;font-size:.875rem;cursor:pointer">
+          <input type="checkbox" id="ann-pinned"> Pin this announcement
+        </label>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="this.closest('.modal-overlay').remove()">Cancel</button>
+        <button class="btn btn-accent" onclick="postAnnouncement()">Post</button>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+}
+async function postAnnouncement() {
+  try {
+    await api.post('/notifications/announce', {
+      title:     document.getElementById('ann-title').value,
+      body:      document.getElementById('ann-body').value,
+      is_pinned: document.getElementById('ann-pinned').checked,
+    });
+    document.querySelector('.modal-overlay')?.remove();
+    toast('Announcement posted!', 'success');
+    const announcements = await api.get('/notifications/announcements');
+    renderAnnouncements(announcements);
+  } catch(e) { toast(e.message, 'error'); }
+}
+
+loadDashboard();
+</script>
+</body>
+</html>
