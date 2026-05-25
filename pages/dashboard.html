@@ -454,6 +454,78 @@
     .quick-action:hover { border-color: var(--navy-400); color: var(--navy-700); background: var(--navy-50); transform: translateY(-1px); box-shadow: var(--shadow-sm); }
     .quick-action svg { width: 18px; height: 18px; color: var(--navy-600); flex-shrink: 0; }
 
+    .suite-module-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+    .suite-module-card {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 190px;
+      padding: 16px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      background: var(--bg-surface);
+      box-shadow: var(--shadow-sm);
+      transition: transform var(--duration), border-color var(--duration), box-shadow var(--duration);
+    }
+    .suite-module-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--navy-400);
+      box-shadow: var(--shadow-md);
+    }
+    .suite-module-eyebrow {
+      color: var(--text-muted);
+      font-size: .7rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+    .suite-module-title {
+      color: var(--text-primary);
+      font-size: .95rem;
+      font-weight: 800;
+      margin-top: 8px;
+    }
+    .suite-module-copy {
+      color: var(--text-secondary);
+      font-size: .8rem;
+      line-height: 1.45;
+      margin-top: 7px;
+    }
+    .suite-module-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 12px;
+      margin-top: 18px;
+    }
+    .suite-module-metric strong {
+      display: block;
+      color: var(--text-primary);
+      font-size: 1rem;
+    }
+    .suite-module-metric span {
+      display: block;
+      color: var(--text-muted);
+      font-size: .74rem;
+      margin-top: 2px;
+    }
+    .suite-module-score {
+      min-width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: var(--mint-100);
+      color: var(--navy-800);
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: .83rem;
+    }
+
     .birthday-list { display: flex; flex-direction: column; gap: 12px; }
     .birthday-item {
       display: flex;
@@ -493,6 +565,7 @@
       .col-span-3 { grid-column: span 2; }
       .ops-grid { grid-template-columns: 1fr; }
       .platform-grid { grid-template-columns: 1fr; }
+      .suite-module-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .lifecycle-grid { grid-template-columns: repeat(2, 1fr); }
     }
     @media (max-width: 640px) {
@@ -503,6 +576,7 @@
       .welcome-banner { flex-direction: column; align-items: flex-start; }
       .clock-widget-mini { text-align: left; width: 100%; min-width: 0; }
       .hero-insights { grid-template-columns: 1fr; }
+      .suite-module-grid { grid-template-columns: 1fr; }
       .lifecycle-grid { grid-template-columns: 1fr; }
       .health-legend { grid-template-columns: 1fr; }
     }
@@ -578,6 +652,14 @@
       </div>
     </div>
 
+    <div class="section-heading">
+      <div>
+        <h2>People Platform Suite</h2>
+        <p>Hiring, onboarding, benefits, reporting, and automation connected to core HR operations.</p>
+      </div>
+    </div>
+    <div class="suite-module-grid" id="suite-module-grid"></div>
+
     <div class="platform-grid">
       <div class="card">
         <div class="card-header">
@@ -650,6 +732,14 @@
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
               Employee Records
             </a>
+            <a href="hiring.html" class="quick-action">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2M3 12h18"/></svg>
+              Hiring Pipeline
+            </a>
+            <a href="onboarding.html" class="quick-action">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+              Onboarding
+            </a>
             <a href="leave.html" class="quick-action">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
               Review Leave
@@ -657,6 +747,10 @@
             <a href="payroll.html" class="quick-action">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M16 13a1 1 0 100-2 1 1 0 000 2z" fill="currentColor"/></svg>
               View Payslips
+            </a>
+            <a href="benefits.html" class="quick-action">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 000-7.78z"/></svg>
+              Benefits
             </a>
             <a href="messages.html" class="quick-action">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
@@ -669,6 +763,10 @@
             <a href="performance.html" class="quick-action">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
               Performance
+            </a>
+            <a href="reports.html" class="quick-action">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3v18h18"/><rect x="7" y="12" width="3" height="5"/><rect x="12" y="8" width="3" height="9"/><rect x="17" y="5" width="3" height="12"/></svg>
+              Reports
             </a>
           </div>
         </div>
@@ -706,6 +804,7 @@
 </div>
 
 <script src="../js/api.js"></script>
+<script src="../js/hr-suite-data.js"></script>
 <script>
 const user = requireAuth();
 if (!user) throw new Error('redirect');
@@ -964,11 +1063,13 @@ setInterval(syncWelcomeMeta, 1000);
 
 function setDashboardCopy() {
   const sections = document.querySelectorAll('.section-heading');
+  const firstSection = sections[0];
+  const workbenchSection = sections[sections.length - 1];
   if (user.role === 'employee') {
-    sections[0]?.querySelector('h2') && (sections[0].querySelector('h2').textContent = 'My HR Snapshot');
-    sections[0]?.querySelector('p') && (sections[0].querySelector('p').textContent = 'Your leave, payroll, documents, and performance at a glance.');
-    sections[1]?.querySelector('h2') && (sections[1].querySelector('h2').textContent = 'My Workday');
-    sections[1]?.querySelector('p') && (sections[1].querySelector('p').textContent = 'The HR tasks and updates that need your attention today.');
+    firstSection?.querySelector('h2') && (firstSection.querySelector('h2').textContent = 'My HR Snapshot');
+    firstSection?.querySelector('p') && (firstSection.querySelector('p').textContent = 'Your leave, payroll, documents, and performance at a glance.');
+    workbenchSection?.querySelector('h2') && (workbenchSection.querySelector('h2').textContent = 'My Workday');
+    workbenchSection?.querySelector('p') && (workbenchSection.querySelector('p').textContent = 'The HR tasks and updates that need your attention today.');
     document.getElementById('ops-link').textContent = 'Request leave';
   } else {
     document.getElementById('ops-link').textContent = 'Review work';
@@ -978,6 +1079,7 @@ function setDashboardCopy() {
 async function loadDashboard() {
   try {
     setDashboardCopy();
+    renderSuiteModules();
     const [myLeaves, myPayslips, myDocs, myReviews] = await Promise.all([
       api.get('/leave/mine'),
       api.get('/payroll/mine'),
@@ -1051,6 +1153,29 @@ function getHrSignals({ stats, leaveQueue, payrollRows, teamSummary }) {
     openWork,
     readiness
   };
+}
+
+function renderSuiteModules() {
+  const modules = window.hrSuiteData?.modules || [];
+  const el = document.getElementById('suite-module-grid');
+  if (!el || !modules.length) return;
+
+  el.innerHTML = modules.map((module) => `
+    <a class="suite-module-card" href="${module.page}.html">
+      <div>
+        <div class="suite-module-eyebrow">${escapeHtml(module.eyebrow)}</div>
+        <div class="suite-module-title">${escapeHtml(module.title)}</div>
+        <div class="suite-module-copy">${escapeHtml(module.summary)}</div>
+      </div>
+      <div class="suite-module-footer">
+        <div class="suite-module-metric">
+          <strong>${escapeHtml(module.metric)}</strong>
+          <span>${escapeHtml(module.status)}</span>
+        </div>
+        <div class="suite-module-score">${module.health}%</div>
+      </div>
+    </a>
+  `).join('');
 }
 
 function renderHeroInsights(data) {
