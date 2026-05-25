@@ -68,7 +68,8 @@ const api = {
 
     if (res.status === 401) {
       this.clearAuth();
-      window.location.href = appUrl('/pages/login.html');
+      const staffPath = window.location.pathname.includes('staff-');
+      window.location.href = appUrl(staffPath ? '/pages/staff-login.html' : '/pages/login.html');
       return;
     }
 
@@ -98,6 +99,17 @@ function requireAuth() {
 }
 
 // ─── Role guard ────────────────────────────────────────────
+function requireStaffAuth() {
+  const token = api.getToken();
+  const user  = api.getUser();
+  if (!token || !user || user.role === 'admin') {
+    api.clearAuth();
+    window.location.href = appUrl('/pages/staff-login.html');
+    return null;
+  }
+  return user;
+}
+
 function requireRole(...roles) {
   const user = requireAuth();
   if (user && !roles.includes(user.role)) {
