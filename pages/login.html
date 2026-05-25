@@ -225,7 +225,7 @@
   <script src="../js/api.js"></script>
   <script>
     // Redirect if already logged in
-    if (api.getToken()) window.location.href = '/pages/dashboard.html';
+    if (api.getToken()) window.location.href = appUrl('/pages/dashboard.html');
 
     document.getElementById('login-form').addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -242,7 +242,7 @@
         });
         api.setToken(data.token);
         api.setUser(data.user);
-        window.location.href = '/pages/dashboard.html';
+        window.location.href = appUrl('/pages/dashboard.html');
       } catch (err) {
         errorEl.textContent = err.message || 'Invalid credentials';
         errorEl.style.display = 'block';

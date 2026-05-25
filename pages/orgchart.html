@@ -258,7 +258,7 @@ function showEmpModal(node) {
       ${node.department_name ? `<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)"><span class="text-muted">Department</span><span>${node.department_name}</span></div>` : ''}
     </div>`;
   document.getElementById('emp-modal-profile-btn').onclick = () => {
-    window.location.href = `/pages/employee-profile.html?id=${node.id}`;
+    window.location.href = appUrl(`/pages/employee-profile.html?id=${node.id}`);
   };
   document.getElementById('emp-modal').style.display = 'flex';
 }

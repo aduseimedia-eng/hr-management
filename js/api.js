@@ -3,12 +3,32 @@ const API_BASE = 'http://localhost:5000/api';
 const USE_MOCK_API = true;
 let mockApiLoadPromise = null;
 
+const APP_BASE = (() => {
+  const path = window.location.pathname;
+  const pagesIndex = path.indexOf('/pages/');
+  if (pagesIndex >= 0) return path.slice(0, pagesIndex);
+  if (window.location.hostname.endsWith('github.io')) {
+    const [repo] = path.split('/').filter(Boolean);
+    return repo ? `/${repo}` : '';
+  }
+  return '';
+})();
+
+function appUrl(path) {
+  if (!path) return APP_BASE || '/';
+  if (/^(https?:|data:|blob:|#)/.test(path)) return path;
+  const cleanPath = path.startsWith('/') ? path : `/${path}`;
+  return `${APP_BASE}${cleanPath}`;
+}
+
+window.appUrl = appUrl;
+
 function ensureMockApi() {
   if (window.hrMockApi) return Promise.resolve(window.hrMockApi);
   if (!mockApiLoadPromise) {
     mockApiLoadPromise = new Promise((resolve, reject) => {
       const script = document.createElement('script');
-      script.src = '/js/mock-api.js';
+      script.src = appUrl('/js/mock-api.js');
       script.onload = () => resolve(window.hrMockApi);
       script.onerror = () => reject(new Error('Could not load local mock API'));
       document.head.appendChild(script);
@@ -48,7 +68,7 @@ const api = {
 
     if (res.status === 401) {
       this.clearAuth();
-      window.location.href = '/pages/login.html';
+      window.location.href = appUrl('/pages/login.html');
       return;
     }
 
@@ -70,7 +90,7 @@ function requireAuth() {
   const token = api.getToken();
   const user  = api.getUser();
   if (!token || !user) {
-    window.location.href = '/pages/login.html';
+    window.location.href = appUrl('/pages/login.html');
     return null;
   }
   return user;
@@ -80,7 +100,7 @@ function requireAuth() {
 function requireRole(...roles) {
   const user = requireAuth();
   if (user && !roles.includes(user.role)) {
-    window.location.href = '/pages/dashboard.html';
+    window.location.href = appUrl('/pages/dashboard.html');
     return null;
   }
   return user;
@@ -188,6 +208,7 @@ function assetUrl(url) {
   if (!url) return '';
   if (url === '#') return '#';
   if (/^(https?:|data:|blob:)/.test(url)) return url;
+  if (USE_MOCK_API) return appUrl(url);
   return `http://localhost:5000${url}`;
 }
 
@@ -223,7 +244,7 @@ function buildSidebar(activePage) {
       return `<div class="nav-section-label">${item.section}</div>`;
     }
     const active = activePage === item.page ? 'active' : '';
-    return `<a href="/pages/${item.page}.html" class="nav-item ${active}">
+    return `<a href="${appUrl(`/pages/${item.page}.html`)}" class="nav-item ${active}">
       ${item.icon}
       <span>${item.label}</span>
     </a>`;
@@ -253,7 +274,7 @@ function buildSidebar(activePage) {
 
 function logout() {
   api.clearAuth();
-  window.location.href = '/pages/login.html';
+  window.location.href = appUrl('/pages/login.html');
 }
 
 // ─── Load notification badge ────────────────────────────────

@@ -917,7 +917,7 @@
         if (err.status === 401) {
           localStorage.removeItem('hr_token');
           localStorage.removeItem('hr_user');
-          window.location.href = '/pages/login.html';
+          window.location.href = window.appUrl ? window.appUrl('/pages/login.html') : '/pages/login.html';
           return;
         }
         throw err;
