@@ -1,0 +1,1289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HRConnect - Staff Portal</title>
+  <link rel="stylesheet" href="../css/main.css">
+  <style>
+    body {
+      background: var(--bg-page);
+      color: var(--text-primary);
+    }
+
+    .staff-shell {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 248px minmax(0, 1fr);
+    }
+
+    .staff-sidebar {
+      background: var(--navy-950);
+      color: #fff;
+      min-height: 100vh;
+      padding: 22px 18px;
+      position: sticky;
+      top: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .staff-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 4px 10px;
+    }
+
+    .staff-brand-mark {
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      background: var(--mint-100);
+      color: var(--navy-950);
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+    }
+
+    .staff-brand-name {
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .staff-brand-name span {
+      color: var(--mint-200);
+    }
+
+    .staff-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .staff-nav a,
+    .staff-logout {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 11px;
+      border-radius: 8px;
+      color: rgba(255,255,255,.66);
+      font-size: .88rem;
+      transition: background var(--duration), color var(--duration);
+    }
+
+    .staff-nav a:hover,
+    .staff-logout:hover {
+      color: #fff;
+      background: rgba(255,255,255,.08);
+    }
+
+    .staff-nav svg,
+    .staff-logout svg {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      color: var(--mint-200);
+    }
+
+    .staff-logout {
+      margin-top: auto;
+      width: 100%;
+    }
+
+    .staff-sidebar-user {
+      margin-top: auto;
+      padding: 14px;
+      border-radius: 8px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.08);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .staff-sidebar-user .avatar {
+      background: var(--mint-100);
+      color: var(--navy-950);
+    }
+
+    .staff-sidebar-user strong {
+      display: block;
+      color: #fff;
+      font-size: .84rem;
+      line-height: 1.2;
+      max-width: 130px;
+    }
+
+    .staff-sidebar-user span {
+      display: block;
+      color: rgba(255,255,255,.48);
+      font-size: .74rem;
+      max-width: 130px;
+    }
+
+    .staff-main {
+      min-width: 0;
+      padding: 24px;
+    }
+
+    .staff-topbar {
+      height: 64px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: rgba(251,253,252,.88);
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 0 18px;
+      margin-bottom: 18px;
+    }
+
+    .staff-topbar-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .staff-topbar-title h1 {
+      font-size: 1rem;
+      margin: 0;
+    }
+
+    .staff-topbar-title span {
+      color: var(--text-muted);
+      font-size: .8rem;
+      display: block;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 46vw;
+    }
+
+    .staff-topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .staff-hero {
+      border-radius: 8px;
+      background:
+        linear-gradient(135deg, rgba(12,43,54,.96), rgba(25,74,89,.88) 62%, rgba(63,146,125,.74)),
+        var(--navy-950);
+      color: #fff;
+      padding: 28px;
+      min-height: 238px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 300px;
+      gap: 26px;
+      align-items: stretch;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .staff-hero::after {
+      content: "";
+      position: absolute;
+      width: 360px;
+      height: 360px;
+      right: -150px;
+      top: -160px;
+      border-radius: 999px;
+      border: 1px solid rgba(221,245,230,.22);
+      pointer-events: none;
+    }
+
+    .staff-hero-copy,
+    .staff-hero-side {
+      position: relative;
+      z-index: 1;
+    }
+
+    .staff-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: rgba(221,245,230,.12);
+      color: var(--mint-200);
+      font-size: .72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .staff-hero h2 {
+      color: #fff;
+      font-size: 2.2rem;
+      margin: 18px 0 10px;
+      max-width: 640px;
+    }
+
+    .staff-hero p {
+      color: rgba(255,255,255,.66);
+      max-width: 620px;
+      font-size: .95rem;
+    }
+
+    .staff-hero-side {
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: 8px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 14px;
+    }
+
+    .hero-side-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(255,255,255,.10);
+    }
+
+    .hero-side-row:last-child {
+      padding-bottom: 0;
+      border-bottom: 0;
+    }
+
+    .hero-side-row span {
+      color: rgba(255,255,255,.54);
+      font-size: .78rem;
+    }
+
+    .hero-side-row strong {
+      color: #fff;
+      font-size: .86rem;
+      text-align: right;
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin: 18px 0;
+    }
+
+    .metric-card,
+    .staff-panel {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .metric-card {
+      padding: 18px;
+      min-height: 132px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .metric-label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      color: var(--text-muted);
+      font-size: .78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .metric-label svg {
+      width: 18px;
+      height: 18px;
+      color: var(--navy-600);
+    }
+
+    .metric-value {
+      font-size: 1.85rem;
+      line-height: 1;
+      font-weight: 800;
+      margin-top: 16px;
+      color: var(--text-primary);
+    }
+
+    .metric-note {
+      color: var(--text-secondary);
+      font-size: .78rem;
+      margin-top: 9px;
+    }
+
+    .staff-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(320px, .9fr);
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .staff-grid.three {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .staff-panel-header {
+      min-height: 60px;
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .staff-panel-header h3 {
+      font-size: .98rem;
+      margin: 0;
+    }
+
+    .staff-panel-header span {
+      display: block;
+      color: var(--text-muted);
+      font-size: .78rem;
+      margin-top: 2px;
+    }
+
+    .staff-panel-body {
+      padding: 18px;
+    }
+
+    .leave-form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0 14px;
+    }
+
+    .leave-form-grid .span-2 {
+      grid-column: 1 / -1;
+    }
+
+    .staff-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .staff-row:first-child {
+      padding-top: 0;
+    }
+
+    .staff-row:last-child {
+      padding-bottom: 0;
+      border-bottom: 0;
+    }
+
+    .staff-row strong {
+      display: block;
+      color: var(--text-primary);
+      font-size: .9rem;
+      margin-bottom: 3px;
+    }
+
+    .staff-row span {
+      color: var(--text-secondary);
+      font-size: .8rem;
+      line-height: 1.45;
+    }
+
+    .row-meta {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 7px;
+      flex-shrink: 0;
+      text-align: right;
+    }
+
+    .row-meta small {
+      color: var(--text-muted);
+      font-size: .74rem;
+    }
+
+    .profile-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .profile-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .profile-item:last-child {
+      padding-bottom: 0;
+      border-bottom: 0;
+    }
+
+    .profile-item span {
+      color: var(--text-muted);
+      font-size: .78rem;
+    }
+
+    .profile-item strong {
+      color: var(--text-primary);
+      font-size: .86rem;
+      text-align: right;
+    }
+
+    .document-form {
+      display: grid;
+      grid-template-columns: minmax(0, 150px) minmax(0, 1fr) auto;
+      gap: 10px;
+      margin-bottom: 18px;
+      align-items: center;
+    }
+
+    .empty-compact {
+      border: 1px dashed var(--border-dark);
+      border-radius: 8px;
+      padding: 22px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: .86rem;
+      background: var(--navy-50);
+    }
+
+    .review-rating {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      color: var(--amber-600);
+      font-weight: 800;
+      font-size: .86rem;
+    }
+
+    .review-rating svg {
+      width: 15px;
+      height: 15px;
+      fill: currentColor;
+    }
+
+    .unread-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--mint-600);
+      flex-shrink: 0;
+      margin-top: 7px;
+    }
+
+    .alert-row {
+      justify-content: flex-start;
+    }
+
+    @media (max-width: 1120px) {
+      .metric-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .staff-grid,
+      .staff-grid.three {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 860px) {
+      .staff-shell {
+        grid-template-columns: 1fr;
+      }
+      .staff-sidebar {
+        min-height: auto;
+        position: static;
+        padding: 16px;
+        overflow-x: hidden;
+      }
+      .staff-nav {
+        flex-direction: row;
+        overflow-x: auto;
+        padding-bottom: 4px;
+      }
+      .staff-nav a {
+        white-space: nowrap;
+      }
+      .staff-sidebar-user,
+      .staff-logout {
+        display: none;
+      }
+      .staff-main {
+        padding: 16px;
+        overflow-x: hidden;
+      }
+      .staff-hero {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .staff-topbar {
+        height: auto;
+        min-height: 64px;
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 14px;
+      }
+      .staff-topbar-actions {
+        width: 100%;
+        flex-direction: column;
+      }
+      .staff-topbar-actions .btn {
+        width: 100%;
+        min-width: 0;
+        justify-content: center;
+      }
+      .staff-hero {
+        padding: 22px;
+      }
+      .staff-hero h2 {
+        font-size: 1.8rem;
+      }
+      .metric-grid,
+      .leave-form-grid,
+      .document-form {
+        grid-template-columns: 1fr;
+      }
+      .staff-row,
+      .profile-item {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .row-meta,
+      .profile-item strong {
+        align-items: flex-start;
+        text-align: left;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="staff-shell">
+    <aside class="staff-sidebar">
+      <div class="staff-brand">
+        <div class="staff-brand-mark">HR</div>
+        <div class="staff-brand-name">HR<span>Connect</span></div>
+      </div>
+
+      <nav class="staff-nav" aria-label="Staff portal navigation">
+        <a href="#overview">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          Overview
+        </a>
+        <a href="#leave-request">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+          Leave
+        </a>
+        <a href="#payroll">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M16 13a1 1 0 100-2 1 1 0 000 2z" fill="currentColor"/></svg>
+          Payslips
+        </a>
+        <a href="#documents">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>
+          Documents
+        </a>
+        <a href="#performance">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          Reviews
+        </a>
+      </nav>
+
+      <div class="staff-sidebar-user">
+        <div class="avatar avatar-sm" data-staff-initials>--</div>
+        <div>
+          <strong id="sidebar-name">Loading...</strong>
+          <span id="sidebar-role">Staff portal</span>
+        </div>
+      </div>
+
+      <button class="staff-logout" type="button" onclick="staffLogout()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+        Sign out
+      </button>
+    </aside>
+
+    <main class="staff-main">
+      <header class="staff-topbar">
+        <div class="staff-topbar-title">
+          <div class="avatar avatar-sm" data-staff-initials>--</div>
+          <div>
+            <h1 id="topbar-name">Staff Portal</h1>
+            <span id="topbar-detail">Loading employee workspace...</span>
+          </div>
+        </div>
+        <div class="staff-topbar-actions">
+          <button class="btn btn-outline" type="button" onclick="document.getElementById('leave-request').scrollIntoView({ behavior: 'smooth' });">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+            Request Leave
+          </button>
+          <button class="btn btn-primary" type="button" onclick="staffLogout()">
+            Sign Out
+          </button>
+        </div>
+      </header>
+
+      <section class="staff-hero" id="overview">
+        <div class="staff-hero-copy">
+          <span class="staff-eyebrow">Employee workspace</span>
+          <h2 id="hero-title">Welcome back.</h2>
+          <p id="hero-copy">Your personal HR view is loading.</p>
+        </div>
+        <div class="staff-hero-side">
+          <div class="hero-side-row">
+            <span>Department</span>
+            <strong id="hero-department">--</strong>
+          </div>
+          <div class="hero-side-row">
+            <span>Manager</span>
+            <strong id="hero-manager">--</strong>
+          </div>
+          <div class="hero-side-row">
+            <span>Hire date</span>
+            <strong id="hero-hire-date">--</strong>
+          </div>
+        </div>
+      </section>
+
+      <section class="metric-grid" id="staff-kpis" aria-label="Staff metrics">
+        <article class="metric-card">
+          <div class="metric-label">
+            <span>Pending leave</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v5l3 2"/><circle cx="12" cy="12" r="10"/></svg>
+          </div>
+          <div>
+            <div class="metric-value" id="kpi-pending-leave">--</div>
+            <div class="metric-note">awaiting approval</div>
+          </div>
+        </article>
+        <article class="metric-card">
+          <div class="metric-label">
+            <span>Leave balance</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+          </div>
+          <div>
+            <div class="metric-value" id="kpi-leave-balance">--</div>
+            <div class="metric-note">annual days remaining</div>
+          </div>
+        </article>
+        <article class="metric-card">
+          <div class="metric-label">
+            <span>Latest payslip</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/></svg>
+          </div>
+          <div>
+            <div class="metric-value" id="kpi-latest-pay">--</div>
+            <div class="metric-note" id="kpi-latest-pay-note">net salary</div>
+          </div>
+        </article>
+        <article class="metric-card">
+          <div class="metric-label">
+            <span>Review score</span>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </div>
+          <div>
+            <div class="metric-value" id="kpi-review-score">--</div>
+            <div class="metric-note">latest rating</div>
+          </div>
+        </article>
+      </section>
+
+      <section class="staff-grid">
+        <article class="staff-panel" id="leave-request">
+          <div class="staff-panel-header">
+            <div>
+              <h3>Request Leave</h3>
+              <span>Submit a new time off request for approval</span>
+            </div>
+          </div>
+          <div class="staff-panel-body">
+            <form id="leave-form">
+              <div class="leave-form-grid">
+                <div class="form-group">
+                  <label class="form-label required" for="leave-type">Leave type</label>
+                  <select id="leave-type" class="form-control form-select" required>
+                    <option value="annual">Annual leave</option>
+                    <option value="sick">Sick leave</option>
+                    <option value="personal">Personal leave</option>
+                    <option value="maternity">Maternity leave</option>
+                    <option value="paternity">Paternity leave</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label required" for="leave-start">Start date</label>
+                  <input type="date" id="leave-start" class="form-control" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label required" for="leave-end">End date</label>
+                  <input type="date" id="leave-end" class="form-control" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="leave-reason">Reason</label>
+                  <input type="text" id="leave-reason" class="form-control" placeholder="Short note">
+                </div>
+                <div class="form-group span-2">
+                  <button class="btn btn-primary" type="submit" id="leave-submit">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+                    Submit Request
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </article>
+
+        <article class="staff-panel" id="profile">
+          <div class="staff-panel-header">
+            <div>
+              <h3>Profile Snapshot</h3>
+              <span>Your HR record basics</span>
+            </div>
+          </div>
+          <div class="staff-panel-body">
+            <div class="profile-list">
+              <div class="profile-item">
+                <span>Job title</span>
+                <strong id="profile-title">--</strong>
+              </div>
+              <div class="profile-item">
+                <span>Email</span>
+                <strong id="profile-email">--</strong>
+              </div>
+              <div class="profile-item">
+                <span>Phone</span>
+                <strong id="profile-phone">--</strong>
+              </div>
+              <div class="profile-item">
+                <span>Address</span>
+                <strong id="profile-address">--</strong>
+              </div>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="staff-grid">
+        <article class="staff-panel">
+          <div class="staff-panel-header">
+            <div>
+              <h3>Leave History</h3>
+              <span id="leave-summary">Recent requests</span>
+            </div>
+          </div>
+          <div class="staff-panel-body" id="leave-list">
+            <div class="loading-state"><div class="spinner"></div><span>Loading leave history...</span></div>
+          </div>
+        </article>
+
+        <article class="staff-panel" id="payroll">
+          <div class="staff-panel-header">
+            <div>
+              <h3>Payslips</h3>
+              <span>Latest payroll records</span>
+            </div>
+          </div>
+          <div class="staff-panel-body" id="payslip-list">
+            <div class="loading-state"><div class="spinner"></div><span>Loading payslips...</span></div>
+          </div>
+        </article>
+      </section>
+
+      <section class="staff-grid three">
+        <article class="staff-panel" id="documents">
+          <div class="staff-panel-header">
+            <div>
+              <h3>Documents</h3>
+              <span>Uploads tied to your profile</span>
+            </div>
+          </div>
+          <div class="staff-panel-body">
+            <form class="document-form" id="document-form">
+              <select id="doc-type" class="form-control form-select" aria-label="Document type">
+                <option value="certificate">Certificate</option>
+                <option value="id">ID document</option>
+                <option value="contract">Contract</option>
+                <option value="other">Other</option>
+              </select>
+              <input id="doc-file" type="file" class="form-control" required>
+              <button class="btn btn-outline" type="submit" id="doc-submit">Upload</button>
+            </form>
+            <div id="document-list">
+              <div class="loading-state"><div class="spinner"></div><span>Loading documents...</span></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="staff-panel" id="performance">
+          <div class="staff-panel-header">
+            <div>
+              <h3>Performance</h3>
+              <span>Your latest reviews</span>
+            </div>
+          </div>
+          <div class="staff-panel-body" id="review-list">
+            <div class="loading-state"><div class="spinner"></div><span>Loading reviews...</span></div>
+          </div>
+        </article>
+
+        <article class="staff-panel" id="announcements">
+          <div class="staff-panel-header">
+            <div>
+              <h3>Announcements</h3>
+              <span>Company updates</span>
+            </div>
+          </div>
+          <div class="staff-panel-body" id="announcement-list">
+            <div class="loading-state"><div class="spinner"></div><span>Loading announcements...</span></div>
+          </div>
+        </article>
+      </section>
+
+      <section class="staff-grid">
+        <article class="staff-panel" id="alerts">
+          <div class="staff-panel-header">
+            <div>
+              <h3>Notifications</h3>
+              <span id="alert-summary">Personal alerts</span>
+            </div>
+            <button class="btn btn-sm btn-outline" type="button" id="mark-alerts-read">Mark Read</button>
+          </div>
+          <div class="staff-panel-body" id="notification-list">
+            <div class="loading-state"><div class="spinner"></div><span>Loading notifications...</span></div>
+          </div>
+        </article>
+
+        <article class="staff-panel">
+          <div class="staff-panel-header">
+            <div>
+              <h3>Next Leave</h3>
+              <span>Approved upcoming time off</span>
+            </div>
+          </div>
+          <div class="staff-panel-body" id="next-leave-card">
+            <div class="empty-compact">No approved upcoming leave yet.</div>
+          </div>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script>
+    const currentUser = requireStaffAuth();
+    const MS_DAY = 86400000;
+    const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    let portalState = {
+      profile: null,
+      leaves: [],
+      payroll: [],
+      documents: [],
+      reviews: [],
+      announcements: [],
+      notifications: [],
+    };
+
+    if (currentUser) {
+      bootStaffPortal();
+    }
+
+    async function bootStaffPortal() {
+      setDateDefaults();
+      renderShellUser(currentUser);
+      document.getElementById('leave-form').addEventListener('submit', submitLeaveRequest);
+      document.getElementById('document-form').addEventListener('submit', uploadDocument);
+      document.getElementById('mark-alerts-read').addEventListener('click', markAlertsRead);
+      await loadPortal();
+    }
+
+    async function loadPortal() {
+      try {
+        const [profile, leaves, payroll, documents, reviews, announcements, notifications] = await Promise.all([
+          api.get('/auth/me'),
+          api.get('/leave/mine'),
+          api.get('/payroll/mine'),
+          api.get('/documents/mine'),
+          api.get('/performance/mine'),
+          api.get('/notifications/announcements'),
+          api.get('/notifications/mine'),
+        ]);
+
+        portalState = { profile, leaves, payroll, documents, reviews, announcements, notifications };
+        renderShellUser(profile);
+        renderProfile(profile);
+        renderKpis();
+        renderLeaveHistory();
+        renderPayslips();
+        renderDocuments();
+        renderReviews();
+        renderAnnouncements();
+        renderNotifications();
+        renderNextLeave();
+      } catch (err) {
+        toast(err.message || 'Could not load staff portal', 'error');
+      }
+    }
+
+    function renderShellUser(user) {
+      const fullName = `${user.first_name || ''} ${user.last_name || ''}`.trim() || 'Staff member';
+      const initials = fmt.initials(user.first_name, user.last_name) || 'ST';
+      document.querySelectorAll('[data-staff-initials]').forEach((node) => { node.textContent = initials; });
+      setText('sidebar-name', fullName);
+      setText('sidebar-role', user.job_title || titleCase(user.role || 'staff'));
+      setText('topbar-name', fullName);
+      setText('topbar-detail', `${user.job_title || titleCase(user.role || 'staff')} ${user.department_name ? '- ' + user.department_name : ''}`);
+      setText('hero-title', `Welcome back, ${user.first_name || 'there'}.`);
+      setText('hero-copy', `${user.job_title || 'Team member'} workspace for requests, payroll records, documents, reviews, and company updates.`);
+    }
+
+    function renderProfile(profile) {
+      setText('hero-department', profile.department_name || 'Unassigned');
+      setText('hero-manager', profile.manager_name || 'Not assigned');
+      setText('hero-hire-date', fmt.date(profile.hire_date));
+      setText('profile-title', profile.job_title || 'Not assigned');
+      setText('profile-email', profile.email || '--');
+      setText('profile-phone', profile.phone || '--');
+      setText('profile-address', profile.address || '--');
+    }
+
+    function renderKpis() {
+      const { leaves, payroll, reviews } = portalState;
+      const pending = leaves.filter((leave) => leave.status === 'pending').length;
+      const annualUsed = leaves
+        .filter((leave) => leave.status === 'approved' && leave.leave_type === 'annual' && new Date(leave.start_date).getFullYear() === new Date().getFullYear())
+        .reduce((total, leave) => total + leaveDays(leave), 0);
+      const remaining = Math.max(0, 20 - annualUsed);
+      const latestPay = latestPayroll(payroll);
+      const latestReview = latestReviewRow(reviews);
+
+      setText('kpi-pending-leave', pending);
+      setText('kpi-leave-balance', remaining);
+      setText('kpi-latest-pay', latestPay ? compactMoney(latestPay.net_salary) : '--');
+      setText('kpi-latest-pay-note', latestPay ? `${monthLabel(latestPay.month, latestPay.year)} net salary` : 'net salary');
+      setText('kpi-review-score', latestReview ? `${Number(latestReview.rating).toFixed(1)}/5` : '--');
+    }
+
+    function renderLeaveHistory() {
+      const leaves = portalState.leaves.slice().sort((a, b) => String(b.created_at).localeCompare(String(a.created_at)));
+      setText('leave-summary', `${leaves.length} total request${leaves.length === 1 ? '' : 's'}`);
+      const target = document.getElementById('leave-list');
+      if (!leaves.length) {
+        target.innerHTML = emptyBlock('No leave requests yet.');
+        return;
+      }
+
+      target.innerHTML = leaves.map((leave) => `
+        <div class="staff-row">
+          <div>
+            <strong>${safe(typeLabel(leave.leave_type))} leave</strong>
+            <span>${fmt.date(leave.start_date)} - ${fmt.date(leave.end_date)} &middot; ${safe(leave.reason || 'No reason added')}</span>
+          </div>
+          <div class="row-meta">
+            ${fmt.statusBadge(leave.status)}
+            <small>${leaveDays(leave)} day${leaveDays(leave) === 1 ? '' : 's'}</small>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderPayslips() {
+      const rows = portalState.payroll.slice().sort((a, b) => b.year - a.year || b.month - a.month);
+      const target = document.getElementById('payslip-list');
+      if (!rows.length) {
+        target.innerHTML = emptyBlock('No payslips available yet.');
+        return;
+      }
+
+      target.innerHTML = rows.slice(0, 5).map((pay) => `
+        <div class="staff-row">
+          <div>
+            <strong>${monthLabel(pay.month, pay.year)}</strong>
+            <span>Base ${fmt.currency(pay.base_salary)} &middot; Deductions ${fmt.currency(pay.deductions)}</span>
+          </div>
+          <div class="row-meta">
+            <strong>${fmt.currency(pay.net_salary)}</strong>
+            ${fmt.statusBadge(pay.status)}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderDocuments() {
+      const docs = portalState.documents;
+      const target = document.getElementById('document-list');
+      if (!docs.length) {
+        target.innerHTML = emptyBlock('No documents uploaded yet.');
+        return;
+      }
+
+      target.innerHTML = docs.map((doc) => `
+        <div class="staff-row">
+          <div>
+            <strong>${safe(doc.original_name)}</strong>
+            <span>${safe(typeLabel(doc.doc_type))} &middot; ${formatFileSize(doc.file_size)}</span>
+          </div>
+          <div class="row-meta">
+            <small>${fmt.date(doc.uploaded_at)}</small>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderReviews() {
+      const rows = portalState.reviews.slice().sort((a, b) => String(b.review_date).localeCompare(String(a.review_date)));
+      const target = document.getElementById('review-list');
+      if (!rows.length) {
+        target.innerHTML = emptyBlock('No reviews published yet.');
+        return;
+      }
+
+      target.innerHTML = rows.map((review) => `
+        <div class="staff-row">
+          <div>
+            <strong>${safe(review.period || 'Performance review')}</strong>
+            <span>${safe(review.comments || 'No comments added')}</span>
+          </div>
+          <div class="row-meta">
+            <span class="review-rating">${reviewStarIcon()} ${Number(review.rating).toFixed(1)}</span>
+            <small>${fmt.date(review.review_date)}</small>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderAnnouncements() {
+      const rows = portalState.announcements.slice(0, 4);
+      const target = document.getElementById('announcement-list');
+      if (!rows.length) {
+        target.innerHTML = emptyBlock('No announcements yet.');
+        return;
+      }
+
+      target.innerHTML = rows.map((item) => `
+        <div class="staff-row">
+          <div>
+            <strong>${safe(item.title)}</strong>
+            <span>${safe(item.body)}</span>
+          </div>
+          <div class="row-meta">
+            ${item.is_pinned ? '<span class="badge badge-info">Pinned</span>' : ''}
+            <small>${fmt.relativeTime(item.created_at)}</small>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderNotifications() {
+      const rows = portalState.notifications.slice(0, 6);
+      const unread = portalState.notifications.filter((alert) => !alert.is_read).length;
+      setText('alert-summary', `${unread} unread alert${unread === 1 ? '' : 's'}`);
+      const target = document.getElementById('notification-list');
+      if (!rows.length) {
+        target.innerHTML = emptyBlock('No notifications yet.');
+        return;
+      }
+
+      target.innerHTML = rows.map((alert) => `
+        <div class="staff-row alert-row">
+          ${alert.is_read ? '' : '<span class="unread-dot"></span>'}
+          <div>
+            <strong>${safe(typeLabel(alert.type))}</strong>
+            <span>${safe(alert.message)}</span>
+            <span>${fmt.relativeTime(alert.created_at)}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderNextLeave() {
+      const next = nextApprovedLeave();
+      const target = document.getElementById('next-leave-card');
+      if (!next) {
+        target.innerHTML = '<div class="empty-compact">No approved upcoming leave yet.</div>';
+        return;
+      }
+
+      target.innerHTML = `
+        <div class="staff-row">
+          <div>
+            <strong>${safe(typeLabel(next.leave_type))} leave</strong>
+            <span>${fmt.date(next.start_date)} - ${fmt.date(next.end_date)}</span>
+          </div>
+          <div class="row-meta">
+            ${fmt.statusBadge(next.status)}
+            <small>${leaveDays(next)} day${leaveDays(next) === 1 ? '' : 's'}</small>
+          </div>
+        </div>
+      `;
+    }
+
+    async function submitLeaveRequest(event) {
+      event.preventDefault();
+      const button = document.getElementById('leave-submit');
+      button.disabled = true;
+      button.innerHTML = 'Submitting...';
+
+      try {
+        await api.post('/leave', {
+          leave_type: document.getElementById('leave-type').value,
+          start_date: document.getElementById('leave-start').value,
+          end_date: document.getElementById('leave-end').value,
+          reason: document.getElementById('leave-reason').value.trim(),
+        });
+        event.target.reset();
+        setDateDefaults();
+        toast('Leave request submitted', 'success');
+        await loadPortal();
+      } catch (err) {
+        toast(err.message || 'Could not submit leave request', 'error');
+      } finally {
+        button.disabled = false;
+        button.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>Submit Request';
+      }
+    }
+
+    async function uploadDocument(event) {
+      event.preventDefault();
+      const button = document.getElementById('doc-submit');
+      const file = document.getElementById('doc-file').files[0];
+      if (!file) return;
+
+      const form = new FormData();
+      form.append('doc_type', document.getElementById('doc-type').value);
+      form.append('document', file);
+      button.disabled = true;
+      button.textContent = 'Uploading...';
+
+      try {
+        await api.upload('/documents', form);
+        event.target.reset();
+        toast('Document uploaded', 'success');
+        await loadPortal();
+      } catch (err) {
+        toast(err.message || 'Could not upload document', 'error');
+      } finally {
+        button.disabled = false;
+        button.textContent = 'Upload';
+      }
+    }
+
+    async function markAlertsRead() {
+      try {
+        await api.patch('/notifications/read-all');
+        toast('Notifications marked as read', 'success');
+        await loadPortal();
+      } catch (err) {
+        toast(err.message || 'Could not update notifications', 'error');
+      }
+    }
+
+    function staffLogout() {
+      api.clearAuth();
+      window.location.href = appUrl('/pages/staff-login.html');
+    }
+
+    function setDateDefaults() {
+      const today = new Date().toISOString().slice(0, 10);
+      const start = document.getElementById('leave-start');
+      const end = document.getElementById('leave-end');
+      start.min = today;
+      end.min = today;
+      if (!start.value) start.value = today;
+      if (!end.value) end.value = today;
+      start.onchange = () => {
+        end.min = start.value || today;
+        if (end.value && end.value < start.value) end.value = start.value;
+      };
+    }
+
+    function setText(id, value) {
+      const node = document.getElementById(id);
+      if (node) node.textContent = value == null || value === '' ? '--' : value;
+    }
+
+    function safe(value) {
+      return String(value ?? '').replace(/[&<>"']/g, (char) => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;',
+      })[char]);
+    }
+
+    function typeLabel(value) {
+      return String(value || '')
+        .replace(/[_-]/g, ' ')
+        .replace(/\b\w/g, (letter) => letter.toUpperCase());
+    }
+
+    function titleCase(value) {
+      return typeLabel(value);
+    }
+
+    function monthLabel(month, year) {
+      const index = Number(month) - 1;
+      return `${MONTHS[index] || 'Month'} ${year}`;
+    }
+
+    function leaveDays(leave) {
+      const start = new Date(leave.start_date);
+      const end = new Date(leave.end_date);
+      if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) return 0;
+      return Math.max(1, Math.round((end - start) / MS_DAY) + 1);
+    }
+
+    function latestPayroll(rows) {
+      return rows.slice().sort((a, b) => b.year - a.year || b.month - a.month)[0] || null;
+    }
+
+    function latestReviewRow(rows) {
+      return rows.slice().sort((a, b) => String(b.review_date).localeCompare(String(a.review_date)))[0] || null;
+    }
+
+    function nextApprovedLeave() {
+      const today = new Date().toISOString().slice(0, 10);
+      return portalState.leaves
+        .filter((leave) => leave.status === 'approved' && leave.end_date >= today)
+        .sort((a, b) => String(a.start_date).localeCompare(String(b.start_date)))[0] || null;
+    }
+
+    function compactMoney(value) {
+      if (value == null) return '--';
+      return new Intl.NumberFormat('en-GH', {
+        style: 'currency',
+        currency: 'GHS',
+        notation: Number(value) >= 10000 ? 'compact' : 'standard',
+        maximumFractionDigits: 0,
+      }).format(Number(value));
+    }
+
+    function formatFileSize(size) {
+      const bytes = Number(size || 0);
+      if (!bytes) return 'Size pending';
+      if (bytes < 1024) return `${bytes} B`;
+      if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`;
+      return `${Math.round(bytes / 1024 / 1024)} MB`;
+    }
+
+    function emptyBlock(message) {
+      return `<div class="empty-compact">${safe(message)}</div>`;
+    }
+
+    function reviewStarIcon() {
+      return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>';
+    }
+  </script>
+</body>
+</html>

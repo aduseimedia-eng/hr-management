@@ -351,14 +351,17 @@
     const url = parsePath(path);
     const route = url.pathname;
     const db = loadDb();
-    const isLogin = method === 'POST' && route === '/auth/login';
+    const isAdminLogin = method === 'POST' && route === '/auth/login';
+    const isStaffLogin = method === 'POST' && route === '/auth/staff-login';
+    const isLogin = isAdminLogin || isStaffLogin;
     const user = isLogin ? null : requireUser();
 
     if (isLogin) {
       const email = String(body?.email || '').toLowerCase().trim();
       const employee = db.employees.find((e) => e.email.toLowerCase() === email && e.is_active);
       if (!employee || employee.password !== body?.password) throw new Error('Invalid credentials');
-      if (employee.role !== 'admin') throw new Error('Only HR/Admin accounts can access this workspace');
+      if (isAdminLogin && employee.role !== 'admin') throw new Error('Only HR/Admin accounts can access this workspace');
+      if (isStaffLogin && employee.role === 'admin') throw new Error('Please use the HR/Admin sign in page for this account');
       return { token: `mock-token-${employee.id}-${Date.now()}`, user: safeUser(employee) };
     }
 
@@ -918,7 +921,9 @@
         if (err.status === 401) {
           localStorage.removeItem('hr_token');
           localStorage.removeItem('hr_user');
-          window.location.href = window.appUrl ? window.appUrl('/pages/login.html') : '/pages/login.html';
+          const staffPath = window.location.pathname.includes('staff-');
+          const loginPath = staffPath ? '/pages/staff-login.html' : '/pages/login.html';
+          window.location.href = window.appUrl ? window.appUrl(loginPath) : loginPath;
           return;
         }
         throw err;
