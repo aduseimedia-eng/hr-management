@@ -89,7 +89,8 @@ const api = {
 function requireAuth() {
   const token = api.getToken();
   const user  = api.getUser();
-  if (!token || !user) {
+  if (!token || !user || user.role !== 'admin') {
+    api.clearAuth();
     window.location.href = appUrl('/pages/login.html');
     return null;
   }
