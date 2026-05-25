@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HRConnect — Sign In</title>
+  <title>HRConnect - HR/Admin Sign In</title>
   <link rel="stylesheet" href="../css/main.css">
   <style>
     body { display: flex; min-height: 100vh; background: var(--bg-page); }
@@ -181,8 +181,8 @@
   <!-- Right form panel -->
   <div class="login-right">
     <div class="login-form-card">
-      <h1>Welcome back</h1>
-      <p class="subtitle">Sign in to your HRConnect account</p>
+      <h1>HR/Admin sign in</h1>
+      <p class="subtitle">Only authorized HR/Admin accounts can access this workspace.</p>
 
       <div class="error-alert" id="login-error"></div>
 
@@ -201,21 +201,13 @@
       </form>
 
       <div class="demo-accounts">
-        <h5>Demo accounts</h5>
+        <h5>HR/Admin demo account</h5>
         <div class="demo-row">
-          <span><strong>Admin</strong> — admin@company.com</span>
+          <span><strong>HR/Admin</strong> - admin@company.com</span>
           <button class="fill-btn" onclick="fillDemo('admin@company.com')">Use</button>
         </div>
-        <div class="demo-row">
-          <span><strong>Manager</strong> — kwame.mensah@company.com</span>
-          <button class="fill-btn" onclick="fillDemo('kwame.mensah@company.com')">Use</button>
-        </div>
-        <div class="demo-row">
-          <span><strong>Employee</strong> — akosua.boateng@company.com</span>
-          <button class="fill-btn" onclick="fillDemo('akosua.boateng@company.com')">Use</button>
-        </div>
         <div class="demo-row" style="margin-top:6px;padding-top:6px;border-top:1px solid var(--border)">
-          <span>All passwords:</span>
+          <span>Password:</span>
           <strong>Password123!</strong>
         </div>
       </div>
@@ -224,8 +216,13 @@
 
   <script src="../js/api.js"></script>
   <script>
-    // Redirect if already logged in
-    if (api.getToken()) window.location.href = appUrl('/pages/dashboard.html');
+    // Redirect only active HR/Admin sessions. Clear stale non-admin sessions.
+    const existingUser = api.getUser();
+    if (api.getToken() && existingUser?.role === 'admin') {
+      window.location.href = appUrl('/pages/dashboard.html');
+    } else if (api.getToken()) {
+      api.clearAuth();
+    }
 
     document.getElementById('login-form').addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -240,6 +237,10 @@
           email:    document.getElementById('email').value,
           password: document.getElementById('password').value,
         });
+        if (data.user?.role !== 'admin') {
+          api.clearAuth();
+          throw new Error('Only HR/Admin accounts can access this workspace');
+        }
         api.setToken(data.token);
         api.setUser(data.user);
         window.location.href = appUrl('/pages/dashboard.html');

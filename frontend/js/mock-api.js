@@ -358,6 +358,7 @@
       const email = String(body?.email || '').toLowerCase().trim();
       const employee = db.employees.find((e) => e.email.toLowerCase() === email && e.is_active);
       if (!employee || employee.password !== body?.password) throw new Error('Invalid credentials');
+      if (employee.role !== 'admin') throw new Error('Only HR/Admin accounts can access this workspace');
       return { token: `mock-token-${employee.id}-${Date.now()}`, user: safeUser(employee) };
     }
 
