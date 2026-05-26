@@ -247,7 +247,7 @@
     // Redirect only active HR/Admin sessions. Clear stale non-admin sessions.
     const existingUser = api.getUser();
     if (api.getToken() && existingUser?.role === 'admin') {
-      window.location.href = appUrl('/pages/dashboard.html');
+      window.location.href = adminWorkspaceUrl('dashboard');
     } else if (api.getToken()) {
       api.clearAuth();
     }
@@ -271,7 +271,7 @@
         }
         api.setToken(data.token);
         api.setUser(data.user);
-        window.location.href = appUrl('/pages/dashboard.html');
+        window.location.href = adminWorkspaceUrl('dashboard');
       } catch (err) {
         errorEl.textContent = err.message || 'Invalid credentials';
         errorEl.style.display = 'block';

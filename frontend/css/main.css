@@ -313,7 +313,7 @@ p  { color: var(--text-secondary); }
   flex: 1;
 }
 .topbar-actions { display: flex; align-items: center; gap: 8px; }
-.mobile-menu-btn { display: none; }
+.topbar .mobile-menu-btn { display: none; }
 .sidebar-backdrop {
   display: none;
   position: fixed;
@@ -343,7 +343,6 @@ body.sidebar-open { overflow: hidden; }
   border-radius: 50%;
   border: 2px solid var(--bg-surface);
 }
-
 /* ─── Main content ────────────────────────────────────────── */
 .main-content {
   padding: 28px;
@@ -826,7 +825,7 @@ tbody tr:hover { background: var(--bg-page); }
     box-shadow: var(--shadow-lg);
   }
   .sidebar.open { transform: translateX(0); }
-  .mobile-menu-btn {
+  .topbar .mobile-menu-btn {
     display: inline-flex;
     flex-shrink: 0;
   }

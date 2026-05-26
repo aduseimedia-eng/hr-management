@@ -23,6 +23,56 @@ function appUrl(path) {
 
 window.appUrl = appUrl;
 
+function isAdminWorkspace() {
+  return /\/pages\/workspace\.html$/i.test(window.location.pathname);
+}
+
+function adminWorkspaceUrl(page) {
+  return appUrl(`/pages/workspace.html#${page}`);
+}
+
+function isEmbeddedWorkspacePage() {
+  return window.self !== window.top || new URLSearchParams(window.location.search).get('embed') === '1';
+}
+
+function activateEmbeddedWorkspacePage() {
+  if (!isEmbeddedWorkspacePage() || !document.body || document.body.classList.contains('embedded-page')) return;
+  document.body.classList.add('embedded-page');
+
+  const style = document.createElement('style');
+  style.textContent = `
+    body.embedded-page {
+      overflow: auto !important;
+      background: var(--bg-page) !important;
+    }
+    body.embedded-page .app-shell {
+      display: block !important;
+      height: auto !important;
+      min-height: 100vh !important;
+      overflow: visible !important;
+    }
+    body.embedded-page .sidebar,
+    body.embedded-page .topbar,
+    body.embedded-page .sidebar-backdrop {
+      display: none !important;
+    }
+    body.embedded-page .main-content {
+      min-height: auto !important;
+      width: 100% !important;
+      max-width: none !important;
+      padding: 22px !important;
+      overflow: visible !important;
+    }
+  `;
+  document.head.appendChild(style);
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', activateEmbeddedWorkspacePage);
+} else {
+  activateEmbeddedWorkspacePage();
+}
+
 function ensureMockApi() {
   if (window.hrMockApi) return Promise.resolve(window.hrMockApi);
   if (!mockApiLoadPromise) {
@@ -113,7 +163,7 @@ function requireStaffAuth() {
 function requireRole(...roles) {
   const user = requireAuth();
   if (user && !roles.includes(user.role)) {
-    window.location.href = appUrl('/pages/dashboard.html');
+    window.location.href = adminWorkspaceUrl('dashboard');
     return null;
   }
   return user;
@@ -241,6 +291,7 @@ function buildSidebar(activePage) {
     { page: 'benefits',    icon: heartIcon(),      label: 'Benefits',     roles: ['admin'] },
     { page: 'reports',     icon: chartIcon(),      label: 'Reports',      roles: ['admin','manager'] },
     { section: 'Workforce', roles: ['admin','manager','employee'] },
+    { page: 'attendance',  icon: clockIcon(),      label: 'Attendance',   roles: ['admin'] },
     { page: 'leave',       icon: calendarIcon(),   label: 'Leave',        roles: ['admin','manager','employee'] },
     { page: 'payroll',     icon: walletIcon(),     label: 'Payroll',      roles: ['admin','manager','employee'] },
     { page: 'messages',    icon: chatIcon(),       label: 'Messages',     roles: ['admin','manager','employee'] },
@@ -262,7 +313,8 @@ function buildSidebar(activePage) {
       return `<div class="nav-section-label">${item.section}</div>`;
     }
     const active = activePage === item.page ? 'active' : '';
-    return `<a href="${appUrl(`/pages/${item.page}.html`)}" class="nav-item ${active}">
+    const href = isAdminWorkspace() ? `#${item.page}` : adminWorkspaceUrl(item.page);
+    return `<a href="${href}" class="nav-item ${active}">
       ${item.icon}
       <span>${item.label}</span>
     </a>`;

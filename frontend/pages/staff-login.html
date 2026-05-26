@@ -360,7 +360,7 @@
   <script>
     const existingUser = api.getUser();
     if (api.getToken() && existingUser && existingUser.role !== 'admin') {
-      window.location.href = appUrl('/pages/staff-portal.html');
+      window.location.href = appUrl('/pages/staff-portal.html#overview');
     } else if (api.getToken()) {
       api.clearAuth();
     }
@@ -386,7 +386,7 @@
 
         api.setToken(data.token);
         api.setUser(data.user);
-        window.location.href = appUrl('/pages/staff-portal.html');
+        window.location.href = appUrl('/pages/staff-portal.html#overview');
       } catch (err) {
         error.textContent = err.message || 'Invalid credentials';
         error.style.display = 'block';

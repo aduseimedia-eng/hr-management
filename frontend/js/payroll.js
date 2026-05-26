@@ -1,156 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Payroll - HRConnect</title>
-  <link rel="stylesheet" href="../css/main.css">
-  <link rel="stylesheet" href="../css/workspace.css">
-  <style>
-    .payslip-card {
-      background: var(--bg-surface);
-      border: 1.5px solid var(--border);
-      border-radius: var(--radius-lg);
-      overflow: hidden;
-      transition: all var(--duration);
-      cursor: pointer;
-    }
-    .payslip-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
-    .payslip-header {
-      background: linear-gradient(135deg, var(--navy-800), var(--navy-950));
-      padding: 18px 20px;
-      color: #fff;
-    }
-    .payslip-month { font-family: var(--font-display); font-size: 1.1rem; font-weight: 600; }
-    .payslip-body { padding: 16px 20px; }
-    .payslip-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid var(--border); font-size: .875rem; }
-    .payslip-row:last-child { border-bottom: none; }
-    .payslip-net { font-family: var(--font-display); font-size: 1.4rem; font-weight: 700; color: var(--navy-800); }
-
-    .payslip-detail {
-      background: var(--bg-surface);
-      border-radius: var(--radius-xl);
-      padding: 40px;
-      max-width: 680px;
-      margin: 0 auto;
-    }
-    .payslip-detail-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 32px;
-      padding-bottom: 24px;
-      border-bottom: 2px solid var(--border);
-    }
-    .payslip-detail .company-logo {
-      display: flex; align-items: center; gap: 10px;
-    }
-    .payslip-detail .company-logo .mark {
-      width: 40px; height: 40px;
-      background: var(--navy-800);
-      border-radius: 8px;
-      display: flex; align-items: center; justify-content: center;
-      font-family: var(--font-display);
-      font-weight: 700; color: #fff; font-size: .95rem;
-    }
-    .detail-section { margin-bottom: 24px; }
-    .detail-section h4 { font-size: .8rem; text-transform: uppercase; letter-spacing: .08em; color: var(--text-muted); margin-bottom: 12px; }
-    .detail-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: .9rem; }
-    .detail-row.total { font-weight: 600; font-size: 1rem; border-top: 2px solid var(--border); border-bottom: none; margin-top: 4px; }
-    .detail-row .positive { color: var(--success-fg); }
-    .detail-row .negative { color: var(--danger-fg); }
-    .net-salary-box {
-      background: var(--navy-50);
-      border-radius: var(--radius-lg);
-      padding: 20px 24px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 8px;
-    }
-    .net-amount { font-family: var(--font-display); font-size: 2rem; font-weight: 700; color: var(--navy-800); }
-  </style>
-</head>
-<body>
-<div class="app-shell">
-  <aside class="sidebar" id="sidebar"></aside>
-  <header class="topbar">
-    <div class="topbar-title">Payroll</div>
-    <div class="topbar-actions">
-      <button class="icon-btn">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>
-        <span class="dot hidden" id="notif-badge"></span>
-      </button>
-    </div>
-  </header>
-  <main class="main-content">
-    <div class="page-header">
-      <div><h1>Payroll</h1><p>View and manage salary and payslips</p></div>
-      <div id="admin-payroll-actions" style="display:flex;gap:10px"></div>
-    </div>
-
-    <div class="tabs">
-      <button class="tab-btn active" onclick="switchTab('mine')">My Payslips</button>
-      <button class="tab-btn" id="admin-tab" style="display:none" onclick="switchTab('all')">All Payroll</button>
-      <button class="tab-btn" id="summary-tab" style="display:none" onclick="switchTab('summary')">Summary</button>
-    </div>
-
-    <!-- My payslips -->
-    <div id="tab-mine">
-      <div id="my-payslips-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px">
-        <div class="loading-state"><div class="spinner"></div></div>
-      </div>
-    </div>
-
-    <!-- All payroll (admin) -->
-    <div id="tab-all" style="display:none">
-      <div style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap">
-        <select id="pr-month" class="form-control form-select" style="max-width:140px"></select>
-        <select id="pr-year"  class="form-control form-select" style="max-width:110px"></select>
-        <select id="pr-status" class="form-control form-select" style="max-width:140px">
-          <option value="">All Status</option>
-          <option value="pending">Pending</option>
-          <option value="processed">Processed</option>
-          <option value="paid">Paid</option>
-        </select>
-        <button class="btn btn-outline" onclick="loadAllPayroll()">Filter</button>
-      </div>
-      <div class="table-container">
-        <table>
-          <thead><tr><th>Employee</th><th>Department</th><th>Base Salary</th><th>Allowances</th><th>Deductions</th><th>Net</th><th>Status</th><th>Actions</th></tr></thead>
-          <tbody id="all-payroll-tbody"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- Summary -->
-    <div id="tab-summary" style="display:none">
-      <div class="table-container">
-        <table>
-          <thead><tr><th>Period</th><th>Employees</th><th>Base Total</th><th>Deductions</th><th>Net Total</th><th>Paid</th></tr></thead>
-          <tbody id="summary-tbody"></tbody>
-        </table>
-      </div>
-    </div>
-  </main>
-</div>
-
-<!-- Payslip Detail Modal -->
-<div id="payslip-modal" class="modal-overlay" style="display:none">
-  <div class="modal modal-lg">
-    <div class="modal-header">
-      <h3>Payslip</h3>
-      <div style="display:flex;gap:8px">
-        <button class="btn btn-outline btn-sm" onclick="printPayslip()">Print</button>
-        <button class="modal-close" onclick="document.getElementById('payslip-modal').style.display='none'">x</button>
-      </div>
-    </div>
-    <div class="modal-body" id="payslip-detail"></div>
-  </div>
-</div>
-
-<script src="../js/api.js"></script>
-<script type="application/json" id="payroll-inline-legacy">
 const user = requireAuth();
 if (!user) throw new Error('redirect');
 buildSidebar('payroll');
@@ -160,15 +7,12 @@ const months = ['January','February','March','April','May','June','July','August
 const now = new Date();
 
 if (user.role === 'admin') {
-  // Show admin tabs
   document.getElementById('admin-tab').style.display = '';
   document.getElementById('summary-tab').style.display = '';
 
-  // Process payroll button
   document.getElementById('admin-payroll-actions').innerHTML =
     `<button class="btn btn-primary" onclick="showProcessModal()">Process Payroll</button>`;
 
-  // Populate month/year selects
   const mSel = document.getElementById('pr-month');
   const ySel = document.getElementById('pr-year');
   months.forEach((m, i) => mSel.innerHTML += `<option value="${i+1}" ${i===now.getMonth()?'selected':''}>${m}</option>`);
@@ -352,7 +196,3 @@ function showProcessModal() {
 }
 
 loadMyPayslips();
-</script>
-<script src="../js/payroll.js?v=20260526"></script>
-</body>
-</html>

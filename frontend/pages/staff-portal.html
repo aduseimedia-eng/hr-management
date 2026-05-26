@@ -20,10 +20,12 @@
     .staff-sidebar {
       background: var(--navy-950);
       color: #fff;
+      height: 100vh;
       min-height: 100vh;
       padding: 22px 18px;
       position: sticky;
       top: 0;
+      overflow: hidden;
       display: flex;
       flex-direction: column;
       gap: 18px;
@@ -65,6 +67,8 @@
     }
 
     .staff-nav {
+      flex: 1;
+      min-height: 0;
       display: flex;
       flex-direction: column;
       gap: 4px;
@@ -102,7 +106,8 @@
     }
 
     .staff-account-block {
-      margin-top: 0;
+      margin-top: auto;
+      flex-shrink: 0;
       display: grid;
       gap: 8px;
     }
@@ -147,6 +152,18 @@
     .staff-main {
       min-width: 0;
       padding: 24px;
+    }
+
+    .staff-main [data-staff-page] {
+      display: none;
+    }
+
+    .staff-main [data-staff-page].staff-page-active {
+      display: grid;
+    }
+
+    .staff-main .staff-grid[data-staff-page].staff-page-active {
+      grid-template-columns: 1fr;
     }
 
     .staff-mobile-nav {
@@ -203,10 +220,10 @@
       box-shadow: var(--shadow-sm);
       color: var(--text-primary);
       padding: 22px;
-      min-height: 208px;
+      min-height: 232px;
       display: grid;
-      grid-template-columns: minmax(0, 1fr) 300px;
-      gap: 26px;
+      grid-template-columns: minmax(0, 1fr) minmax(340px, 420px);
+      gap: 28px;
       align-items: stretch;
       position: relative;
       overflow: hidden;
@@ -220,6 +237,13 @@
     .staff-hero-side {
       position: relative;
       z-index: 1;
+    }
+
+    .staff-hero-copy {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-width: 0;
     }
 
     .staff-eyebrow {
@@ -248,22 +272,52 @@
       font-size: .9rem;
     }
 
+    .staff-hero-actions {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
     .staff-hero-side {
-      background: var(--navy-50);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 18px;
+      background: transparent;
+      border: 0;
+      border-radius: 0;
+      padding: 2px 0;
       display: flex;
       flex-direction: column;
-      justify-content: center;
-      gap: 14px;
+      justify-content: space-between;
+      gap: 0;
+    }
+
+    .staff-overview-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .staff-overview-head span {
+      color: var(--text-muted);
+      font-size: .74rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .staff-overview-head strong {
+      color: var(--text-primary);
+      font-size: .84rem;
+      text-align: right;
     }
 
     .hero-side-row {
       display: flex;
       justify-content: space-between;
+      align-items: center;
       gap: 12px;
-      padding-bottom: 12px;
+      padding: 13px 0;
       border-bottom: 1px solid var(--border);
     }
 
@@ -372,6 +426,82 @@
 
     .staff-panel-body {
       padding: 18px;
+    }
+
+    .staff-attendance-clock {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--navy-50);
+      padding: 16px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 18px;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .staff-attendance-time {
+      color: var(--navy-950);
+      font-size: 2.3rem;
+      line-height: 1;
+      font-weight: 800;
+    }
+
+    .staff-attendance-date {
+      color: var(--text-secondary);
+      font-size: .84rem;
+      margin-top: 6px;
+    }
+
+    .staff-attendance-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .staff-attendance-status {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .staff-attendance-stat {
+      min-width: 0;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--bg-surface);
+      padding: 12px;
+    }
+
+    .staff-attendance-stat span {
+      display: block;
+      color: var(--text-muted);
+      font-size: .72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .staff-attendance-stat strong {
+      display: block;
+      color: var(--text-primary);
+      font-size: .92rem;
+      margin-top: 7px;
+    }
+
+    .staff-attendance-filter {
+      display: flex;
+      align-items: end;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .staff-attendance-filter .form-group {
+      min-width: 140px;
+      margin-bottom: 0;
     }
 
     .leave-form-grid {
@@ -524,6 +654,7 @@
         grid-template-columns: 1fr;
       }
       .staff-sidebar {
+        height: auto;
         min-height: auto;
         position: sticky;
         top: 0;
@@ -553,7 +684,7 @@
         bottom: 10px;
         z-index: 180;
         display: grid;
-        grid-template-columns: repeat(5, minmax(0, 1fr));
+        grid-template-columns: repeat(6, minmax(0, 1fr));
         gap: 4px;
         padding: 7px;
         background: rgba(251,253,252,.96);
@@ -571,7 +702,7 @@
         gap: 4px;
         border-radius: 8px;
         color: var(--text-secondary);
-        font-size: .68rem;
+        font-size: .62rem;
         font-weight: 700;
         line-height: 1;
       }
@@ -605,6 +736,11 @@
         min-width: 0;
         justify-content: center;
       }
+      .staff-hero-actions .btn {
+        flex: 1;
+        min-width: 150px;
+        justify-content: center;
+      }
       .staff-hero {
         padding: 22px;
       }
@@ -615,6 +751,19 @@
       .leave-form-grid,
       .document-form {
         grid-template-columns: 1fr;
+      }
+      .staff-attendance-clock,
+      .staff-attendance-status {
+        grid-template-columns: 1fr;
+      }
+      .staff-attendance-actions {
+        justify-content: stretch;
+      }
+      .staff-attendance-actions .btn,
+      .staff-attendance-filter .form-group,
+      .staff-attendance-filter .btn {
+        width: 100%;
+        justify-content: center;
       }
       .staff-row,
       .profile-item {
@@ -644,7 +793,11 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
           Overview
         </a>
-        <a href="#leave-request">
+        <a href="#attendance">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          Attendance
+        </a>
+        <a href="#leave">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
           Leave
         </a>
@@ -688,39 +841,48 @@
           </div>
         </div>
         <div class="staff-topbar-actions">
-          <button class="btn btn-outline" type="button" onclick="document.getElementById('leave-request').scrollIntoView({ behavior: 'smooth' });">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
-            Request Leave
-          </button>
           <button class="btn btn-primary" type="button" onclick="staffLogout()">
             Sign Out
           </button>
         </div>
       </header>
 
-      <section class="staff-hero" id="overview">
+      <section class="staff-hero staff-page-active" id="overview" data-staff-page="overview">
         <div class="staff-hero-copy">
-          <span class="staff-eyebrow">Employee workspace</span>
+          <span class="staff-eyebrow">Staff overview</span>
           <h2 id="hero-title">Welcome back.</h2>
           <p id="hero-copy">Your personal HR view is loading.</p>
+          <div class="staff-hero-actions">
+            <button class="btn btn-primary" type="button" id="overview-attendance-action">Attendance</button>
+            <button class="btn btn-outline" type="button" onclick="goToStaffPage('leave')">Request Leave</button>
+            <button class="btn btn-outline" type="button" onclick="goToStaffPage('documents')">Documents</button>
+          </div>
         </div>
-        <div class="staff-hero-side">
-          <div class="hero-side-row">
-            <span>Department</span>
-            <strong id="hero-department">--</strong>
+        <div class="staff-hero-side" aria-label="Today at a glance">
+          <div class="staff-overview-head">
+            <span>Today</span>
+            <strong id="overview-date">--</strong>
           </div>
           <div class="hero-side-row">
-            <span>Manager</span>
-            <strong id="hero-manager">--</strong>
+            <span>Attendance</span>
+            <strong id="overview-attendance-status">--</strong>
           </div>
           <div class="hero-side-row">
-            <span>Hire date</span>
-            <strong id="hero-hire-date">--</strong>
+            <span>Next leave</span>
+            <strong id="overview-next-leave">--</strong>
+          </div>
+          <div class="hero-side-row">
+            <span>Unread alerts</span>
+            <strong id="overview-alerts">--</strong>
+          </div>
+          <div class="hero-side-row">
+            <span>Team</span>
+            <strong id="overview-team">--</strong>
           </div>
         </div>
       </section>
 
-      <section class="metric-grid" id="staff-kpis" aria-label="Staff metrics">
+      <section class="metric-grid staff-page-active" id="staff-kpis" data-staff-page="overview" aria-label="Staff metrics">
         <article class="metric-card">
           <div class="metric-label">
             <span>Pending leave</span>
@@ -763,7 +925,62 @@
         </article>
       </section>
 
-      <section class="staff-grid">
+      <section class="staff-grid" data-staff-page="attendance">
+        <article class="staff-panel" id="attendance">
+          <div class="staff-panel-header">
+            <div>
+              <h3>Attendance</h3>
+              <span id="attendance-summary">Today&apos;s time record</span>
+            </div>
+            <button class="btn btn-sm btn-outline" type="button" onclick="refreshStaffAttendance()">Refresh</button>
+          </div>
+          <div class="staff-panel-body">
+            <div class="staff-attendance-clock">
+              <div>
+                <div class="staff-attendance-time" id="staff-clock-time">--:--:--</div>
+                <div class="staff-attendance-date" id="staff-clock-date">Today</div>
+              </div>
+              <div class="staff-attendance-actions">
+                <button class="btn btn-primary" type="button" id="staff-clock-in" onclick="staffClockAction('in')">Clock In</button>
+                <button class="btn btn-outline" type="button" id="staff-clock-out" onclick="staffClockAction('out')" disabled>Clock Out</button>
+              </div>
+            </div>
+
+            <div class="staff-attendance-status">
+              <div class="staff-attendance-stat">
+                <span>Status</span>
+                <strong id="attendance-today-status">--</strong>
+              </div>
+              <div class="staff-attendance-stat">
+                <span>Clock in</span>
+                <strong id="attendance-clock-in">--</strong>
+              </div>
+              <div class="staff-attendance-stat">
+                <span>Hours</span>
+                <strong id="attendance-hours">--</strong>
+              </div>
+            </div>
+
+            <div class="staff-attendance-filter">
+              <div class="form-group">
+                <label class="form-label" for="attendance-from">From</label>
+                <input type="date" id="attendance-from" class="form-control">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="attendance-to">To</label>
+                <input type="date" id="attendance-to" class="form-control">
+              </div>
+              <button class="btn btn-outline" type="button" onclick="loadStaffAttendanceHistory()">Filter</button>
+            </div>
+
+            <div id="attendance-history-list">
+              <div class="loading-state"><div class="spinner"></div><span>Loading attendance...</span></div>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="staff-grid" data-staff-page="leave">
         <article class="staff-panel" id="leave-request">
           <div class="staff-panel-header">
             <div>
@@ -806,7 +1023,9 @@
             </form>
           </div>
         </article>
+      </section>
 
+      <section class="staff-grid staff-page-active" data-staff-page="overview">
         <article class="staff-panel" id="profile">
           <div class="staff-panel-header">
             <div>
@@ -837,7 +1056,7 @@
         </article>
       </section>
 
-      <section class="staff-grid">
+      <section class="staff-grid" data-staff-page="leave">
         <article class="staff-panel">
           <div class="staff-panel-header">
             <div>
@@ -849,7 +1068,9 @@
             <div class="loading-state"><div class="spinner"></div><span>Loading leave history...</span></div>
           </div>
         </article>
+      </section>
 
+      <section class="staff-grid" data-staff-page="payroll">
         <article class="staff-panel" id="payroll">
           <div class="staff-panel-header">
             <div>
@@ -863,7 +1084,7 @@
         </article>
       </section>
 
-      <section class="staff-grid three">
+      <section class="staff-grid" data-staff-page="documents">
         <article class="staff-panel" id="documents">
           <div class="staff-panel-header">
             <div>
@@ -887,7 +1108,9 @@
             </div>
           </div>
         </article>
+      </section>
 
+      <section class="staff-grid" data-staff-page="performance">
         <article class="staff-panel" id="performance">
           <div class="staff-panel-header">
             <div>
@@ -899,7 +1122,9 @@
             <div class="loading-state"><div class="spinner"></div><span>Loading reviews...</span></div>
           </div>
         </article>
+      </section>
 
+      <section class="staff-grid staff-page-active" data-staff-page="overview">
         <article class="staff-panel" id="announcements">
           <div class="staff-panel-header">
             <div>
@@ -913,7 +1138,7 @@
         </article>
       </section>
 
-      <section class="staff-grid">
+      <section class="staff-grid staff-page-active" data-staff-page="overview">
         <article class="staff-panel" id="alerts">
           <div class="staff-panel-header">
             <div>
@@ -926,7 +1151,9 @@
             <div class="loading-state"><div class="spinner"></div><span>Loading notifications...</span></div>
           </div>
         </article>
+      </section>
 
+      <section class="staff-grid" data-staff-page="leave">
         <article class="staff-panel">
           <div class="staff-panel-header">
             <div>
@@ -946,7 +1173,11 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
         Overview
       </a>
-      <a href="#leave-request">
+      <a href="#attendance">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        Attend
+      </a>
+      <a href="#leave">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
         Leave
       </a>
@@ -970,6 +1201,20 @@
     const currentUser = requireStaffAuth();
     const MS_DAY = 86400000;
     const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const STAFF_PAGE_ALIASES = {
+      'leave-request': 'leave',
+      payslips: 'payroll',
+      reviews: 'performance',
+      docs: 'documents',
+    };
+    const STAFF_PAGE_TITLES = {
+      overview: 'Staff Portal',
+      attendance: 'Attendance',
+      leave: 'Leave',
+      payroll: 'Payslips',
+      documents: 'Documents',
+      performance: 'Reviews',
+    };
     let portalState = {
       profile: null,
       leaves: [],
@@ -978,25 +1223,63 @@
       reviews: [],
       announcements: [],
       notifications: [],
+      attendanceToday: null,
+      attendanceHistory: [],
     };
 
     if (currentUser) {
       bootStaffPortal();
     }
 
+    function getStaffPage(hash) {
+      const raw = String(hash || window.location.hash || '#overview').replace(/^#/, '') || 'overview';
+      const page = STAFF_PAGE_ALIASES[raw] || raw;
+      return STAFF_PAGE_TITLES[page] ? page : 'overview';
+    }
+
     function setStaffNavActive(hash) {
-      const target = hash || '#overview';
+      const target = `#${getStaffPage(hash)}`;
       document.querySelectorAll('.staff-nav a, .staff-mobile-nav a').forEach((link) => {
         link.classList.toggle('active', link.getAttribute('href') === target);
       });
     }
 
+    function showStaffPage(hash, options = {}) {
+      const page = getStaffPage(hash);
+      const targetHash = `#${page}`;
+      document.querySelectorAll('[data-staff-page]').forEach((section) => {
+        section.classList.toggle('staff-page-active', section.dataset.staffPage === page);
+      });
+      setStaffNavActive(targetHash);
+      document.title = `${STAFF_PAGE_TITLES[page]} - HRConnect`;
+      if (window.location.hash !== targetHash) {
+        window.history.replaceState(null, '', targetHash);
+      }
+      if (options.scroll !== false) {
+        window.scrollTo({ top: 0, behavior: options.instant ? 'auto' : 'smooth' });
+      }
+    }
+
+    function goToStaffPage(page) {
+      const targetHash = `#${getStaffPage(page)}`;
+      if (window.location.hash === targetHash) {
+        showStaffPage(targetHash);
+      } else {
+        window.location.hash = targetHash;
+      }
+    }
+
     async function bootStaffPortal() {
       setDateDefaults();
+      updateStaffAttendanceClock();
+      setInterval(updateStaffAttendanceClock, 1000);
       renderShellUser(currentUser);
+      showStaffPage(window.location.hash || '#overview', { scroll: false });
       document.querySelectorAll('.staff-nav a, .staff-mobile-nav a').forEach((link) => {
-        link.addEventListener('click', () => setStaffNavActive(link.getAttribute('href')));
+        link.addEventListener('click', () => showStaffPage(link.getAttribute('href')));
       });
+      window.addEventListener('hashchange', () => showStaffPage(window.location.hash || '#overview'));
+      document.getElementById('overview-attendance-action')?.addEventListener('click', handleOverviewAttendanceAction);
       document.getElementById('leave-form').addEventListener('submit', submitLeaveRequest);
       document.getElementById('document-form').addEventListener('submit', uploadDocument);
       document.getElementById('mark-alerts-read').addEventListener('click', markAlertsRead);
@@ -1005,7 +1288,7 @@
 
     async function loadPortal() {
       try {
-        const [profile, leaves, payroll, documents, reviews, announcements, notifications] = await Promise.all([
+        const [profile, leaves, payroll, documents, reviews, announcements, notifications, attendanceToday, attendanceHistory] = await Promise.all([
           api.get('/auth/me'),
           api.get('/leave/mine'),
           api.get('/payroll/mine'),
@@ -1013,12 +1296,15 @@
           api.get('/performance/mine'),
           api.get('/notifications/announcements'),
           api.get('/notifications/mine'),
+          api.get('/attendance/today'),
+          api.get('/attendance/my-history?limit=30'),
         ]);
 
-        portalState = { profile, leaves, payroll, documents, reviews, announcements, notifications };
+        portalState = { profile, leaves, payroll, documents, reviews, announcements, notifications, attendanceToday, attendanceHistory };
         renderShellUser(profile);
         renderProfile(profile);
         renderKpis();
+        renderAttendance();
         renderLeaveHistory();
         renderPayslips();
         renderDocuments();
@@ -1040,13 +1326,11 @@
       setText('topbar-name', fullName);
       setText('topbar-detail', `${user.job_title || titleCase(user.role || 'staff')} ${user.department_name ? '- ' + user.department_name : ''}`);
       setText('hero-title', `Welcome back, ${user.first_name || 'there'}.`);
-      setText('hero-copy', `${user.job_title || 'Team member'} workspace for requests, payroll records, documents, reviews, and company updates.`);
+      setText('hero-copy', `${user.job_title || 'Team member'} view for today: attendance, requests, pay updates, documents, and alerts.`);
     }
 
     function renderProfile(profile) {
-      setText('hero-department', profile.department_name || 'Unassigned');
-      setText('hero-manager', profile.manager_name || 'Not assigned');
-      setText('hero-hire-date', fmt.date(profile.hire_date));
+      setText('overview-team', `${profile.department_name || 'Unassigned'}${profile.manager_name ? ' / ' + profile.manager_name : ''}`);
       setText('profile-title', profile.job_title || 'Not assigned');
       setText('profile-email', profile.email || '--');
       setText('profile-phone', profile.phone || '--');
@@ -1068,6 +1352,162 @@
       setText('kpi-latest-pay', latestPay ? compactMoney(latestPay.net_salary) : '--');
       setText('kpi-latest-pay-note', latestPay ? `${monthLabel(latestPay.month, latestPay.year)} net salary` : 'net salary');
       setText('kpi-review-score', latestReview ? `${Number(latestReview.rating).toFixed(1)}/5` : '--');
+    }
+
+    function renderOverview() {
+      const att = portalState.attendanceToday || {};
+      const hasClockIn = Boolean(att.clock_in);
+      const hasClockOut = Boolean(att.clock_out);
+      const unread = portalState.notifications.filter((alert) => !alert.is_read).length;
+      const nextLeave = nextApprovedLeave();
+      const action = document.getElementById('overview-attendance-action');
+      const statusNode = document.getElementById('overview-attendance-status');
+      const now = new Date();
+
+      setText('overview-date', now.toLocaleDateString('en-GB', { weekday: 'short', day: '2-digit', month: 'short' }));
+      setText('overview-next-leave', nextLeave ? `${typeLabel(nextLeave.leave_type)} ${fmt.date(nextLeave.start_date)}` : 'None scheduled');
+      setText('overview-alerts', unread ? `${unread} unread` : 'All clear');
+
+      if (statusNode) {
+        statusNode.innerHTML = hasClockIn ? fmt.statusBadge(att.status || 'present') : '<span class="badge badge-neutral">Not started</span>';
+      }
+
+      if (action) {
+        action.disabled = false;
+        if (!hasClockIn) action.textContent = 'Clock In';
+        else if (!hasClockOut) action.textContent = 'Clock Out';
+        else action.textContent = 'View Attendance';
+      }
+    }
+
+    function renderAttendance() {
+      renderStaffTodayStatus();
+      renderStaffAttendanceHistory();
+      renderOverview();
+    }
+
+    function renderStaffTodayStatus() {
+      const att = portalState.attendanceToday || {};
+      const hasClockIn = Boolean(att.clock_in);
+      const hasClockOut = Boolean(att.clock_out);
+      const inBtn = document.getElementById('staff-clock-in');
+      const outBtn = document.getElementById('staff-clock-out');
+      const statusNode = document.getElementById('attendance-today-status');
+
+      if (inBtn) inBtn.disabled = hasClockIn;
+      if (outBtn) outBtn.disabled = !hasClockIn || hasClockOut;
+
+      setText('attendance-summary', hasClockIn ? (hasClockOut ? 'Attendance completed today' : 'Clocked in today') : 'No clock-in recorded today');
+      if (statusNode) {
+        statusNode.innerHTML = hasClockIn ? fmt.statusBadge(att.status || 'present') : '<span class="badge badge-neutral">Not started</span>';
+      }
+      setText('attendance-clock-in', hasClockIn ? fmt.time(att.clock_in) : '--');
+      setText('attendance-hours', hasClockIn ? (hasClockOut ? fmt.duration(att.clock_in, att.clock_out) : 'In progress') : '--');
+    }
+
+    function renderStaffAttendanceHistory() {
+      const target = document.getElementById('attendance-history-list');
+      if (!target) return;
+
+      const rows = (portalState.attendanceHistory || [])
+        .slice()
+        .sort((a, b) => String(b.work_date).localeCompare(String(a.work_date)));
+
+      if (!rows.length) {
+        target.innerHTML = emptyBlock('No attendance records yet.');
+        return;
+      }
+
+      target.innerHTML = rows.slice(0, 6).map((row) => {
+        const duration = row.clock_out ? fmt.duration(row.clock_in, row.clock_out) : row.clock_in ? 'In progress' : '--';
+        return `
+          <div class="staff-row">
+            <div>
+              <strong>${fmt.date(row.work_date)}</strong>
+              <span>In ${row.clock_in ? fmt.time(row.clock_in) : '--'} &middot; Out ${row.clock_out ? fmt.time(row.clock_out) : '--'}</span>
+            </div>
+            <div class="row-meta">
+              ${fmt.statusBadge(row.status || 'absent')}
+              <small>${duration}</small>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function refreshStaffAttendance(showToast = true) {
+      try {
+        const [todayRecord, historyRows] = await Promise.all([
+          api.get('/attendance/today'),
+          api.get(`/attendance/my-history${attendanceHistoryQuery()}`),
+        ]);
+        portalState.attendanceToday = todayRecord;
+        portalState.attendanceHistory = historyRows;
+        renderAttendance();
+        if (showToast) toast('Attendance refreshed', 'success');
+      } catch (err) {
+        toast(err.message || 'Could not refresh attendance', 'error');
+      }
+    }
+
+    async function loadStaffAttendanceHistory() {
+      try {
+        const rows = await api.get(`/attendance/my-history${attendanceHistoryQuery()}`);
+        portalState.attendanceHistory = rows;
+        renderStaffAttendanceHistory();
+      } catch (err) {
+        toast(err.message || 'Could not load attendance history', 'error');
+      }
+    }
+
+    async function staffClockAction(type) {
+      const inBtn = document.getElementById('staff-clock-in');
+      const outBtn = document.getElementById('staff-clock-out');
+      const overviewBtn = document.getElementById('overview-attendance-action');
+      if (inBtn) inBtn.disabled = true;
+      if (outBtn) outBtn.disabled = true;
+      if (overviewBtn) overviewBtn.disabled = true;
+
+      try {
+        await api.post(`/attendance/clock-${type}`);
+        toast(`Clocked ${type} at ${new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}`, 'success');
+        await refreshStaffAttendance(false);
+      } catch (err) {
+        toast(err.message || `Could not clock ${type}`, 'error');
+      } finally {
+        renderStaffTodayStatus();
+        renderOverview();
+      }
+    }
+
+    async function handleOverviewAttendanceAction() {
+      const att = portalState.attendanceToday || {};
+      if (!att.clock_in) {
+        await staffClockAction('in');
+        return;
+      }
+      if (!att.clock_out) {
+        await staffClockAction('out');
+        return;
+      }
+      goToStaffPage('attendance');
+    }
+
+    function attendanceHistoryQuery() {
+      const from = document.getElementById('attendance-from')?.value || '';
+      const to = document.getElementById('attendance-to')?.value || '';
+      if (from && to && to < from) throw new Error('End date cannot be before start date');
+
+      let qs = '?limit=30';
+      if (from) qs += `&from=${from}`;
+      if (to) qs += `&to=${to}`;
+      return qs;
+    }
+
+    function updateStaffAttendanceClock() {
+      const now = new Date();
+      setText('staff-clock-time', now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' }));
+      setText('staff-clock-date', now.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }));
     }
 
     function renderLeaveHistory() {

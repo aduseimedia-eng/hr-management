@@ -6,17 +6,49 @@
   <title>Dashboard - HRConnect</title>
   <link rel="stylesheet" href="../css/main.css">
   <style>
-    .minimal-dashboard {
-      max-width: 1280px;
+    body {
+      overflow: hidden;
+    }
+
+    .app-shell {
+      height: 100vh;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    .dashboard-page {
+      max-width: none;
       width: 100%;
+      min-height: calc(100vh - var(--topbar-h));
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      overflow-y: auto;
+    }
+
+    .topbar .icon-btn .dot {
+      min-width: 16px;
+      width: auto;
+      height: 16px;
+      padding: 0 4px;
+      top: 3px;
+      right: 2px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: .62rem;
+      font-weight: 800;
+      line-height: 1;
     }
 
     .dashboard-header {
       display: flex;
-      align-items: flex-start;
+      align-items: center;
       justify-content: space-between;
       gap: 20px;
-      margin-bottom: 20px;
+      flex-shrink: 0;
     }
 
     .dashboard-eyebrow {
@@ -29,7 +61,7 @@
     }
 
     .dashboard-header h1 {
-      font-size: 1.65rem;
+      font-size: 1.55rem;
       margin: 0;
     }
 
@@ -63,14 +95,13 @@
 
     .metric-grid {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 14px;
-      margin-bottom: 18px;
+      grid-template-columns: repeat(4, minmax(180px, 1fr));
+      gap: 12px;
+      flex-shrink: 0;
     }
 
     .metric-card,
-    .dash-panel,
-    .module-card {
+    .dash-panel {
       background: var(--bg-surface);
       border: 1px solid var(--border);
       border-radius: 8px;
@@ -78,8 +109,8 @@
     }
 
     .metric-card {
-      min-height: 116px;
-      padding: 17px;
+      min-height: 108px;
+      padding: 16px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -111,10 +142,10 @@
 
     .metric-value {
       color: var(--text-primary);
-      font-size: 1.7rem;
+      font-size: 1.62rem;
       line-height: 1;
       font-weight: 800;
-      margin-top: 14px;
+      margin-top: 12px;
     }
 
     .metric-note {
@@ -123,16 +154,29 @@
       margin-top: 7px;
     }
 
-    .dashboard-grid {
+    .dashboard-workspace {
+      flex: 1;
       display: grid;
-      grid-template-columns: minmax(0, 1.2fr) minmax(340px, .8fr);
-      gap: 18px;
-      margin-bottom: 18px;
+      grid-template-columns: minmax(0, 1fr) minmax(320px, 400px);
+      gap: 16px;
+      min-height: 0;
+    }
+
+    .workspace-primary,
+    .workspace-rail {
+      display: grid;
+      gap: 16px;
+      align-content: start;
+      min-width: 0;
+    }
+
+    .workspace-rail {
+      grid-template-rows: auto auto auto;
     }
 
     .dash-panel-header {
-      min-height: 58px;
-      padding: 15px 17px;
+      min-height: 56px;
+      padding: 14px 16px;
       border-bottom: 1px solid var(--border);
       display: flex;
       align-items: center;
@@ -153,7 +197,7 @@
     }
 
     .dash-panel-body {
-      padding: 17px;
+      padding: 16px;
     }
 
     .queue-list,
@@ -161,7 +205,7 @@
     .announcement-list,
     .today-list {
       display: grid;
-      gap: 12px;
+      gap: 0;
     }
 
     .queue-item,
@@ -172,8 +216,15 @@
       grid-template-columns: minmax(0, 1fr) auto;
       align-items: center;
       gap: 14px;
-      padding-bottom: 12px;
+      padding: 12px 0;
       border-bottom: 1px solid var(--border);
+    }
+
+    .queue-item:first-child,
+    .people-item:first-child,
+    .announcement-item:first-child,
+    .today-item:first-child {
+      padding-top: 0;
     }
 
     .queue-item:last-child,
@@ -229,91 +280,6 @@
     .mini-badge.warn { background: var(--warning-bg); color: var(--warning-fg); }
     .mini-badge.danger { background: var(--danger-bg); color: var(--danger-fg); }
 
-    .section-title {
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      gap: 16px;
-      margin: 6px 0 12px;
-    }
-
-    .section-title h2 {
-      font-size: 1rem;
-      margin: 0;
-    }
-
-    .section-title p {
-      color: var(--text-muted);
-      font-size: .8rem;
-      margin-top: 2px;
-    }
-
-    .module-grid {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 14px;
-      margin-bottom: 18px;
-    }
-
-    .module-card {
-      min-height: 142px;
-      padding: 15px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      transition: border-color var(--duration), transform var(--duration), box-shadow var(--duration);
-    }
-
-    .module-card:hover {
-      border-color: var(--navy-400);
-      transform: translateY(-1px);
-      box-shadow: var(--shadow-md);
-    }
-
-    .module-card small {
-      display: block;
-      color: var(--text-muted);
-      font-size: .7rem;
-      font-weight: 800;
-      text-transform: uppercase;
-    }
-
-    .module-card strong {
-      display: block;
-      color: var(--text-primary);
-      font-size: .94rem;
-      margin-top: 8px;
-    }
-
-    .module-footer {
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      gap: 12px;
-      margin-top: 18px;
-    }
-
-    .module-footer span {
-      color: var(--text-secondary);
-      font-size: .78rem;
-    }
-
-    .module-health {
-      color: var(--navy-800);
-      font-size: .82rem;
-      font-weight: 800;
-      background: var(--mint-100);
-      border-radius: 999px;
-      padding: 5px 8px;
-      flex-shrink: 0;
-    }
-
-    .bottom-grid {
-      display: grid;
-      grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
-      gap: 18px;
-    }
-
     .avatar-line {
       display: flex;
       align-items: center;
@@ -339,24 +305,39 @@
     }
 
     @media (max-width: 1120px) {
-      .metric-grid,
-      .module-grid {
+      .metric-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
-      .dashboard-grid,
-      .bottom-grid {
+      .dashboard-workspace {
         grid-template-columns: 1fr;
+      }
+
+      .workspace-rail {
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        grid-template-rows: none;
+        align-items: start;
       }
     }
 
     @media (max-width: 720px) {
-      .minimal-dashboard {
-        padding: 16px;
+      body {
+        overflow: auto;
       }
 
-      .dashboard-header,
-      .section-title {
+      .app-shell {
+        height: auto;
+        min-height: 100vh;
+        overflow: visible;
+      }
+
+      .dashboard-page {
+        padding: 16px;
+        min-height: auto;
+        overflow: visible;
+      }
+
+      .dashboard-header {
         flex-direction: column;
         align-items: stretch;
       }
@@ -373,7 +354,7 @@
       }
 
       .metric-grid,
-      .module-grid {
+      .workspace-rail {
         grid-template-columns: 1fr;
       }
 
@@ -406,7 +387,7 @@
     </div>
   </header>
 
-  <main class="main-content minimal-dashboard">
+  <main class="main-content dashboard-page">
     <section class="dashboard-header">
       <div>
         <div class="dashboard-eyebrow">HR overview</div>
@@ -424,75 +405,69 @@
       <div class="loading-minimal">Loading dashboard...</div>
     </section>
 
-    <section class="dashboard-grid">
-      <article class="dash-panel">
-        <div class="dash-panel-header">
-          <div>
-            <h2>Needs Attention</h2>
-            <span>Open work for HR/Admin</span>
+    <section class="dashboard-workspace">
+      <div class="workspace-primary">
+        <article class="dash-panel">
+          <div class="dash-panel-header">
+            <div>
+              <h2>Needs Attention</h2>
+              <span>Open work for HR/Admin</span>
+            </div>
+            <a href="reports.html" class="btn btn-outline btn-sm">View all</a>
           </div>
-          <a href="reports.html" class="btn btn-outline btn-sm">View all</a>
-        </div>
-        <div class="dash-panel-body">
-          <div class="queue-list" id="attention-list">
-            <div class="loading-minimal">Loading work queue...</div>
+          <div class="dash-panel-body">
+            <div class="queue-list" id="attention-list">
+              <div class="loading-minimal">Loading work queue...</div>
+            </div>
           </div>
-        </div>
-      </article>
-
-      <article class="dash-panel">
-        <div class="dash-panel-header">
-          <div>
-            <h2>Today</h2>
-            <span>Operational snapshot</span>
-          </div>
-        </div>
-        <div class="dash-panel-body">
-          <div class="today-list" id="today-list">
-            <div class="loading-minimal">Loading snapshot...</div>
-          </div>
-        </div>
-      </article>
-    </section>
-
-    <section class="section-title">
-      <div>
-        <h2>Platform</h2>
-        <p>Compact access to the expanded HR suite.</p>
+        </article>
       </div>
-    </section>
-    <section class="module-grid" id="module-grid"></section>
 
-    <section class="bottom-grid">
-      <article class="dash-panel">
-        <div class="dash-panel-header">
-          <div>
-            <h2>People Activity</h2>
-            <span>Recent hires and moments</span>
+      <aside class="workspace-rail" aria-label="Dashboard context">
+        <article class="dash-panel">
+          <div class="dash-panel-header">
+            <div>
+              <h2>Today</h2>
+              <span>Operational snapshot</span>
+            </div>
           </div>
-          <a href="employees.html" class="btn btn-outline btn-sm">Directory</a>
-        </div>
-        <div class="dash-panel-body">
-          <div class="people-list" id="people-list">
-            <div class="loading-minimal">Loading people activity...</div>
+          <div class="dash-panel-body">
+            <div class="today-list" id="today-list">
+              <div class="loading-minimal">Loading snapshot...</div>
+            </div>
           </div>
-        </div>
-      </article>
+        </article>
 
-      <article class="dash-panel">
-        <div class="dash-panel-header">
-          <div>
-            <h2>Announcements</h2>
-            <span>Latest company updates</span>
+        <article class="dash-panel">
+          <div class="dash-panel-header">
+            <div>
+              <h2>People Activity</h2>
+              <span>Recent hires and moments</span>
+            </div>
+            <a href="employees.html" class="btn btn-outline btn-sm">Directory</a>
           </div>
-          <button class="btn btn-outline btn-sm" onclick="showAnnouncementDraft()">Post</button>
-        </div>
-        <div class="dash-panel-body">
-          <div class="announcement-list" id="announcement-list">
-            <div class="loading-minimal">Loading announcements...</div>
+          <div class="dash-panel-body">
+            <div class="people-list" id="people-list">
+              <div class="loading-minimal">Loading people activity...</div>
+            </div>
           </div>
-        </div>
-      </article>
+        </article>
+
+        <article class="dash-panel">
+          <div class="dash-panel-header">
+            <div>
+              <h2>Announcements</h2>
+              <span>Latest company updates</span>
+            </div>
+            <button class="btn btn-outline btn-sm" onclick="showAnnouncementDraft()">Post</button>
+          </div>
+          <div class="dash-panel-body">
+            <div class="announcement-list" id="announcement-list">
+              <div class="loading-minimal">Loading announcements...</div>
+            </div>
+          </div>
+        </article>
+      </aside>
     </section>
   </main>
 </div>
@@ -527,7 +502,6 @@ async function loadDashboard() {
     renderMetrics(data);
     renderAttention(data);
     renderToday(data);
-    renderModules();
     renderPeople(stats);
     renderAnnouncements(announcements);
     loadNotifCount();
@@ -681,23 +655,6 @@ function renderToday({ stats, leaveQueue, payrollRows }) {
       </div>
       <div class="item-meta">
         <span class="mini-badge">${escapeHtml(value)}</span>
-      </div>
-    </a>
-  `).join('');
-}
-
-function renderModules() {
-  const modules = window.hrSuiteData?.modules || [];
-  const visible = modules.filter((module) => user.role === 'admin' || module.page !== 'benefits');
-  document.getElementById('module-grid').innerHTML = visible.map((module) => `
-    <a class="module-card" href="${module.page}.html">
-      <div>
-        <small>${escapeHtml(module.eyebrow)}</small>
-        <strong>${escapeHtml(module.title)}</strong>
-      </div>
-      <div class="module-footer">
-        <span>${escapeHtml(module.metric)}</span>
-        <span class="module-health">${module.health}%</span>
       </div>
     </a>
   `).join('');
