@@ -272,6 +272,9 @@ function buildSidebar(activePage) {
     <div class="sidebar-logo">
       <div class="logo-mark">HR</div>
       <span class="logo-text">HR<span>Connect</span></span>
+      <button class="sidebar-close-btn" type="button" aria-label="Close menu">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
     </div>
     <nav class="sidebar-nav">${navHtml}</nav>
     <div class="sidebar-user">
@@ -330,6 +333,8 @@ function setupMobileSidebar(sidebar) {
   };
 
   button.onclick = () => sidebar.classList.contains('open') ? closeMenu() : openMenu();
+  const closeButton = sidebar.querySelector('.sidebar-close-btn');
+  if (closeButton) closeButton.onclick = closeMenu;
   backdrop.onclick = closeMenu;
   sidebar.querySelectorAll('.nav-item').forEach((link) => link.addEventListener('click', closeMenu));
 
