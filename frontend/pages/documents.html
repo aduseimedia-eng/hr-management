@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Documents — HRConnect</title>
   <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/workspace.css">
   <style>
     .doc-card {
       background: var(--bg-surface);
@@ -22,7 +23,9 @@
       border-radius: var(--radius-md);
       display: flex; align-items: center; justify-content: center;
       flex-shrink: 0;
-      font-size: 1.2rem;
+      font-size: .72rem;
+      font-weight: 800;
+      letter-spacing: .04em;
     }
     .doc-icon.pdf      { background: var(--rose-100);   color: var(--rose-600); }
     .doc-icon.image    { background: var(--violet-100); color: var(--violet-600); }
@@ -138,12 +141,12 @@ if (!user) throw new Error('redirect');
 buildSidebar('documents');
 loadNotifCount();
 
-function docIcon(filename) {
+function fileIconMeta(filename) {
   const ext = filename.split('.').pop().toLowerCase();
-  if (ext === 'pdf') return { cls: 'pdf', icon: '📄' };
-  if (['jpg','jpeg','png','webp'].includes(ext)) return { cls: 'image', icon: '🖼️' };
-  if (['doc','docx'].includes(ext)) return { cls: 'word', icon: '📝' };
-  return { cls: 'other', icon: '📎' };
+  if (ext === 'pdf') return { cls: 'pdf', icon: 'PDF' };
+  if (['jpg','jpeg','png','webp'].includes(ext)) return { cls: 'image', icon: 'IMG' };
+  if (['doc','docx'].includes(ext)) return { cls: 'word', icon: 'DOC' };
+  return { cls: 'other', icon: 'FILE' };
 }
 
 function formatSize(bytes) {
@@ -166,7 +169,7 @@ async function loadDocs() {
     return;
   }
   grid.innerHTML = docs.map(d => {
-    const { cls, icon } = docIcon(d.original_name);
+    const { cls, icon } = fileIconMeta(d.original_name);
     return `<div class="doc-card">
       <div class="doc-icon ${cls}">${icon}</div>
       <div class="doc-info">
