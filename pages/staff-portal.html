@@ -101,13 +101,20 @@
       color: var(--mint-200);
     }
 
-    .staff-logout {
+    .staff-account-block {
       margin-top: auto;
+      display: grid;
+      gap: 8px;
+    }
+
+    .staff-logout {
+      margin-top: 0;
       width: 100%;
+      justify-content: flex-start;
     }
 
     .staff-sidebar-user {
-      margin-top: auto;
+      margin-top: 0;
       padding: 14px;
       border-radius: 8px;
       background: rgba(255,255,255,.06);
@@ -531,8 +538,7 @@
       .staff-nav {
         display: none;
       }
-      .staff-sidebar-user,
-      .staff-logout {
+      .staff-account-block {
         display: none;
       }
       .staff-main {
@@ -656,18 +662,20 @@
         </a>
       </nav>
 
-      <div class="staff-sidebar-user">
-        <div class="avatar avatar-sm" data-staff-initials>--</div>
-        <div>
-          <strong id="sidebar-name">Loading...</strong>
-          <span id="sidebar-role">Staff portal</span>
+      <div class="staff-account-block">
+        <div class="staff-sidebar-user">
+          <div class="avatar avatar-sm" data-staff-initials>--</div>
+          <div>
+            <strong id="sidebar-name">Loading...</strong>
+            <span id="sidebar-role">Staff portal</span>
+          </div>
         </div>
-      </div>
 
-      <button class="staff-logout" type="button" onclick="staffLogout()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
-        Sign out
-      </button>
+        <button class="staff-logout" type="button" onclick="staffLogout()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+          Sign out
+        </button>
+      </div>
     </aside>
 
     <main class="staff-main">
