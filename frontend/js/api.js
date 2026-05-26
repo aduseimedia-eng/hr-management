@@ -288,6 +288,67 @@ function buildSidebar(activePage) {
       </button>
     </div>
   `;
+  setupMobileSidebar(sidebar);
+}
+
+function setupMobileSidebar(sidebar) {
+  const topbar = document.querySelector('.topbar');
+  if (!topbar) return;
+
+  let button = topbar.querySelector('.mobile-menu-btn');
+  if (!button) {
+    button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'icon-btn mobile-menu-btn';
+    button.setAttribute('aria-label', 'Open menu');
+    button.setAttribute('aria-expanded', 'false');
+    button.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>`;
+    topbar.insertBefore(button, topbar.firstChild);
+  }
+
+  let backdrop = document.querySelector('.sidebar-backdrop');
+  if (!backdrop) {
+    backdrop = document.createElement('div');
+    backdrop.className = 'sidebar-backdrop';
+    document.body.appendChild(backdrop);
+  }
+
+  const closeMenu = () => {
+    sidebar.classList.remove('open');
+    backdrop.classList.remove('open');
+    document.body.classList.remove('sidebar-open');
+    button.setAttribute('aria-expanded', 'false');
+    button.setAttribute('aria-label', 'Open menu');
+  };
+
+  const openMenu = () => {
+    sidebar.classList.add('open');
+    backdrop.classList.add('open');
+    document.body.classList.add('sidebar-open');
+    button.setAttribute('aria-expanded', 'true');
+    button.setAttribute('aria-label', 'Close menu');
+  };
+
+  button.onclick = () => sidebar.classList.contains('open') ? closeMenu() : openMenu();
+  backdrop.onclick = closeMenu;
+  sidebar.querySelectorAll('.nav-item').forEach((link) => link.addEventListener('click', closeMenu));
+
+  if (!window.__hrSidebarEscBound) {
+    window.__hrSidebarEscBound = true;
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        const activeSidebar = document.querySelector('.sidebar.open');
+        const activeBackdrop = document.querySelector('.sidebar-backdrop.open');
+        activeSidebar?.classList.remove('open');
+        activeBackdrop?.classList.remove('open');
+        document.body.classList.remove('sidebar-open');
+        document.querySelectorAll('.mobile-menu-btn').forEach((btn) => {
+          btn.setAttribute('aria-expanded', 'false');
+          btn.setAttribute('aria-label', 'Open menu');
+        });
+      }
+    });
+  }
 }
 
 function logout() {
