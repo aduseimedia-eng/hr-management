@@ -174,12 +174,12 @@
 
     .staff-hero {
       border-radius: 8px;
-      background:
-        linear-gradient(135deg, rgba(12,43,54,.96), rgba(25,74,89,.88) 62%, rgba(63,146,125,.74)),
-        var(--navy-950);
-      color: #fff;
-      padding: 28px;
-      min-height: 238px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      color: var(--text-primary);
+      padding: 22px;
+      min-height: 208px;
       display: grid;
       grid-template-columns: minmax(0, 1fr) 300px;
       gap: 26px;
@@ -189,15 +189,7 @@
     }
 
     .staff-hero::after {
-      content: "";
-      position: absolute;
-      width: 360px;
-      height: 360px;
-      right: -150px;
-      top: -160px;
-      border-radius: 999px;
-      border: 1px solid rgba(221,245,230,.22);
-      pointer-events: none;
+      display: none;
     }
 
     .staff-hero-copy,
@@ -211,30 +203,30 @@
       align-items: center;
       gap: 8px;
       padding: 5px 10px;
-      border-radius: 999px;
-      background: rgba(221,245,230,.12);
-      color: var(--mint-200);
+      border-radius: 8px;
+      background: var(--mint-100);
+      color: var(--navy-800);
       font-size: .72rem;
       font-weight: 800;
       text-transform: uppercase;
     }
 
     .staff-hero h2 {
-      color: #fff;
-      font-size: 2.2rem;
+      color: var(--text-primary);
+      font-size: 1.55rem;
       margin: 18px 0 10px;
       max-width: 640px;
     }
 
     .staff-hero p {
-      color: rgba(255,255,255,.66);
+      color: var(--text-secondary);
       max-width: 620px;
-      font-size: .95rem;
+      font-size: .9rem;
     }
 
     .staff-hero-side {
-      background: rgba(255,255,255,.08);
-      border: 1px solid rgba(255,255,255,.14);
+      background: var(--navy-50);
+      border: 1px solid var(--border);
       border-radius: 8px;
       padding: 18px;
       display: flex;
@@ -248,7 +240,7 @@
       justify-content: space-between;
       gap: 12px;
       padding-bottom: 12px;
-      border-bottom: 1px solid rgba(255,255,255,.10);
+      border-bottom: 1px solid var(--border);
     }
 
     .hero-side-row:last-child {
@@ -257,12 +249,12 @@
     }
 
     .hero-side-row span {
-      color: rgba(255,255,255,.54);
+      color: var(--text-secondary);
       font-size: .78rem;
     }
 
     .hero-side-row strong {
-      color: #fff;
+      color: var(--text-primary);
       font-size: .86rem;
       text-align: right;
     }
@@ -550,7 +542,7 @@
         padding: 22px;
       }
       .staff-hero h2 {
-        font-size: 1.8rem;
+        font-size: 1.35rem;
       }
       .metric-grid,
       .leave-form-grid,
