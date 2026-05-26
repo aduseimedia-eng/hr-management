@@ -27,6 +27,7 @@
       display: flex;
       flex-direction: column;
       gap: 24px;
+      z-index: 70;
     }
 
     .staff-sidebar-header {
@@ -96,7 +97,7 @@
       border-radius: 8px;
       color: rgba(255,255,255,.66);
       font-size: .88rem;
-      transition: background var(--duration), color var(--duration);
+      transition: none;
     }
 
     .staff-nav a:hover,
@@ -505,6 +506,11 @@
       justify-content: flex-start;
     }
 
+    .staff-main section[id],
+    .staff-panel[id] {
+      scroll-margin-top: 88px;
+    }
+
     @media (max-width: 1120px) {
       .metric-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -521,10 +527,12 @@
       }
       .staff-sidebar {
         min-height: auto;
-        position: static;
+        position: sticky;
+        top: 0;
         padding: 16px;
-        overflow-x: hidden;
+        overflow: visible;
         gap: 14px;
+        box-shadow: var(--shadow-sm);
       }
       .staff-brand {
         padding-bottom: 0;
@@ -534,9 +542,17 @@
       }
       .staff-nav {
         display: none;
+        position: absolute;
+        top: calc(100% + 8px);
+        left: 16px;
+        right: 16px;
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 8px;
-        padding-top: 2px;
+        padding: 10px;
+        background: var(--navy-950);
+        border: 1px solid rgba(255,255,255,.12);
+        border-radius: 8px;
+        box-shadow: 0 16px 36px rgba(12,43,54,.22);
       }
       .staff-sidebar.staff-menu-open .staff-nav {
         display: grid;
@@ -952,6 +968,15 @@
       setDateDefaults();
       renderShellUser(currentUser);
       document.querySelectorAll('.staff-nav a').forEach((link) => link.addEventListener('click', () => toggleStaffMenu(false)));
+      document.addEventListener('click', (event) => {
+        const sidebar = document.querySelector('.staff-sidebar');
+        if (sidebar?.classList.contains('staff-menu-open') && !sidebar.contains(event.target)) {
+          toggleStaffMenu(false);
+        }
+      });
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') toggleStaffMenu(false);
+      });
       window.addEventListener('resize', () => {
         if (window.innerWidth > 860) toggleStaffMenu(false);
       });
