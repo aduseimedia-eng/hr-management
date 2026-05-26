@@ -29,6 +29,13 @@
       gap: 24px;
     }
 
+    .staff-sidebar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
     .staff-brand {
       display: flex;
       align-items: center;
@@ -54,6 +61,24 @@
 
     .staff-brand-name span {
       color: var(--mint-200);
+    }
+
+    .staff-menu-toggle {
+      display: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      color: #fff;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .staff-menu-toggle svg {
+      width: 20px;
+      height: 20px;
     }
 
     .staff-nav {
@@ -499,14 +524,29 @@
         position: static;
         padding: 16px;
         overflow-x: hidden;
+        gap: 14px;
+      }
+      .staff-brand {
+        padding-bottom: 0;
+      }
+      .staff-menu-toggle {
+        display: inline-flex;
       }
       .staff-nav {
-        flex-direction: row;
-        overflow-x: auto;
-        padding-bottom: 4px;
+        display: none;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+        padding-top: 2px;
+      }
+      .staff-sidebar.staff-menu-open .staff-nav {
+        display: grid;
       }
       .staff-nav a {
-        white-space: nowrap;
+        width: 100%;
+        padding: 11px;
+        border: 1px solid rgba(255,255,255,.10);
+        background: rgba(255,255,255,.04);
+        white-space: normal;
       }
       .staff-sidebar-user,
       .staff-logout {
@@ -549,6 +589,9 @@
       .document-form {
         grid-template-columns: 1fr;
       }
+      .staff-nav {
+        grid-template-columns: 1fr;
+      }
       .staff-row,
       .profile-item {
         flex-direction: column;
@@ -565,12 +608,17 @@
 <body>
   <div class="staff-shell">
     <aside class="staff-sidebar">
-      <div class="staff-brand">
-        <div class="staff-brand-mark">HR</div>
-        <div class="staff-brand-name">HR<span>Connect</span></div>
+      <div class="staff-sidebar-header">
+        <div class="staff-brand">
+          <div class="staff-brand-mark">HR</div>
+          <div class="staff-brand-name">HR<span>Connect</span></div>
+        </div>
+        <button class="staff-menu-toggle" type="button" aria-label="Open staff menu" aria-expanded="false" aria-controls="staff-nav" onclick="toggleStaffMenu()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
       </div>
 
-      <nav class="staff-nav" aria-label="Staff portal navigation">
+      <nav class="staff-nav" id="staff-nav" aria-label="Staff portal navigation">
         <a href="#overview">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
           Overview
@@ -890,9 +938,23 @@
       bootStaffPortal();
     }
 
+    function toggleStaffMenu(forceOpen) {
+      const sidebar = document.querySelector('.staff-sidebar');
+      const toggle = document.querySelector('.staff-menu-toggle');
+      if (!sidebar || !toggle) return;
+      const shouldOpen = typeof forceOpen === 'boolean' ? forceOpen : !sidebar.classList.contains('staff-menu-open');
+      sidebar.classList.toggle('staff-menu-open', shouldOpen);
+      toggle.setAttribute('aria-expanded', String(shouldOpen));
+      toggle.setAttribute('aria-label', shouldOpen ? 'Close staff menu' : 'Open staff menu');
+    }
+
     async function bootStaffPortal() {
       setDateDefaults();
       renderShellUser(currentUser);
+      document.querySelectorAll('.staff-nav a').forEach((link) => link.addEventListener('click', () => toggleStaffMenu(false)));
+      window.addEventListener('resize', () => {
+        if (window.innerWidth > 860) toggleStaffMenu(false);
+      });
       document.getElementById('leave-form').addEventListener('submit', submitLeaveRequest);
       document.getElementById('document-form').addEventListener('submit', uploadDocument);
       document.getElementById('mark-alerts-read').addEventListener('click', markAlertsRead);
