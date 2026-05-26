@@ -631,13 +631,10 @@
           <div class="staff-brand-mark">HR</div>
           <div class="staff-brand-name">HR<span>Connect</span></div>
         </div>
-        <button class="staff-menu-toggle" type="button" aria-label="Open staff menu" aria-expanded="false" aria-controls="staff-nav" onclick="toggleStaffMenu()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
-        </button>
       </div>
 
       <nav class="staff-nav" id="staff-nav" aria-label="Staff portal navigation">
-        <a href="#overview">
+        <a href="#overview" class="active">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
           Overview
         </a>
@@ -935,6 +932,29 @@
         </article>
       </section>
     </main>
+
+    <nav class="staff-mobile-nav" aria-label="Staff mobile navigation">
+      <a href="#overview" class="active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        Overview
+      </a>
+      <a href="#leave-request">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        Leave
+      </a>
+      <a href="#payroll">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M16 13a1 1 0 100-2 1 1 0 000 2z" fill="currentColor"/></svg>
+        Payslips
+      </a>
+      <a href="#documents">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>
+        Docs
+      </a>
+      <a href="#performance">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        Reviews
+      </a>
+    </nav>
   </div>
 
   <script src="../js/api.js"></script>
@@ -956,31 +976,18 @@
       bootStaffPortal();
     }
 
-    function toggleStaffMenu(forceOpen) {
-      const sidebar = document.querySelector('.staff-sidebar');
-      const toggle = document.querySelector('.staff-menu-toggle');
-      if (!sidebar || !toggle) return;
-      const shouldOpen = typeof forceOpen === 'boolean' ? forceOpen : !sidebar.classList.contains('staff-menu-open');
-      sidebar.classList.toggle('staff-menu-open', shouldOpen);
-      toggle.setAttribute('aria-expanded', String(shouldOpen));
-      toggle.setAttribute('aria-label', shouldOpen ? 'Close staff menu' : 'Open staff menu');
+    function setStaffNavActive(hash) {
+      const target = hash || '#overview';
+      document.querySelectorAll('.staff-nav a, .staff-mobile-nav a').forEach((link) => {
+        link.classList.toggle('active', link.getAttribute('href') === target);
+      });
     }
 
     async function bootStaffPortal() {
       setDateDefaults();
       renderShellUser(currentUser);
-      document.querySelectorAll('.staff-nav a').forEach((link) => link.addEventListener('click', () => toggleStaffMenu(false)));
-      document.addEventListener('click', (event) => {
-        const sidebar = document.querySelector('.staff-sidebar');
-        if (sidebar?.classList.contains('staff-menu-open') && !sidebar.contains(event.target)) {
-          toggleStaffMenu(false);
-        }
-      });
-      document.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape') toggleStaffMenu(false);
-      });
-      window.addEventListener('resize', () => {
-        if (window.innerWidth > 860) toggleStaffMenu(false);
+      document.querySelectorAll('.staff-nav a, .staff-mobile-nav a').forEach((link) => {
+        link.addEventListener('click', () => setStaffNavActive(link.getAttribute('href')));
       });
       document.getElementById('leave-form').addEventListener('submit', submitLeaveRequest);
       document.getElementById('document-form').addEventListener('submit', uploadDocument);
